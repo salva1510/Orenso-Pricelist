@@ -94,15 +94,29 @@
 <script>
     let isAdmin = false;
     const JSON_URL = 'products.json'; 
-    
-    // LOAD DATA FROM JSON
+    const ADMIN_PASSWORD = "123"; // Maaari mong palitan ito
+
+    // CHECK LOGIN STATUS PAGBUKAS NG PAGE
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLogin = localStorage.getItem('adminLoggedIn');
+        if (savedLogin === 'true') {
+            isAdmin = true;
+            applyAdminUI();
+        }
+        loadData();
+    });
+
+    // LOAD DATA MULA SA GITHUB (LIVE)
     async function loadData() {
         try {
+            // Nagdagdag ng cache-buster para laging fresh ang data mula sa GitHub
             const res = await fetch(JSON_URL + '?nocache=' + new Date().getTime());
+            if (!res.ok) throw new Error();
             const data = await res.json();
             displayItems(data);
         } catch (e) {
-            console.log("No data found or file not yet ready.");
+            console.log("Naghihintay ng products.json file sa GitHub...");
+            document.getElementById('productBody').innerHTML = "<tr><td colspan='3' style='text-align:center'>Wala pang products. I-update ang products.json sa GitHub.</td></tr>";
         }
     }
 
@@ -110,6 +124,8 @@
         let tableBody = document.getElementById('productBody');
         let totalVal = 0;
         tableBody.innerHTML = '';
+        
+        // Ipakita ang "Action" column kung admin
         document.getElementById('actionHead').style.display = isAdmin ? "table-cell" : "none";
 
         items.forEach((item, index) => {
@@ -122,12 +138,12 @@
                     <td><img src="${img}" class="product-img"></td>
                     <td>
                         <strong>${item.name}</strong> <span class="status-badge ${statusClass}">${item.status}</span><br>
-                        <small>${item.qty}</small><br>
-                        ${item.expiry ? `<small style="color:red">EXP: ${item.expiry}</small>` : ''}
+                        <small style="color:#666">${item.qty || ''}</small>
+                        ${item.expiry ? `<br><small style="color:#dc3545; font-weight:bold">EXP: ${item.expiry}</small>` : ''}
                     </td>
                     <td class="price-tag">₱${Number(item.price).toLocaleString()}</td>
                     <td style="display: ${isAdmin ? 'table-cell' : 'none'}">
-                        <button class="delete-btn" onclick="alert('Manual update sa products.json ang kailangan para sa live delete.')">&times;</button>
+                        <button class="delete-btn" onclick="deleteItemPrompt()">&times;</button>
                     </td>
                 </tr>
             `;
@@ -136,16 +152,38 @@
         document.getElementById('totalValue').innerText = "₱" + totalVal.toLocaleString();
     }
 
+    // TOGGLE ADMIN WITH PERMANENT STORAGE
     function toggleAdmin() {
-        let pass = prompt("Enter Admin Password:");
-        if (pass === "123") {
-            isAdmin = true;
-            document.getElementById('adminSection').style.display = "block";
-            document.getElementById('adminStatus').innerText = "Mode: Admin (Edit)";
-            loadData();
+        if (!isAdmin) {
+            let pass = prompt("Enter Admin Password:");
+            if (pass === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('adminLoggedIn', 'true');
+                applyAdminUI();
+                loadData();
+            } else if (pass !== null) {
+                alert("Maling password!");
+            }
         } else {
-            alert("Wrong password!");
+            if(confirm("Gusto mo bang mag-logout?")) {
+                isAdmin = false;
+                localStorage.removeItem('adminLoggedIn');
+                location.reload(); // Refresh para bumalik sa View Only mode
+            }
         }
+    }
+
+    function applyAdminUI() {
+        document.getElementById('adminSection').style.display = "block";
+        document.getElementById('adminStatus').innerText = "Mode: Admin (Logged In)";
+        document.getElementById('loginBtn').innerText = "Logout";
+        document.getElementById('loginBtn').style.background = "#dc3545";
+        const clearBtn = document.getElementById('clearBtn');
+        if(clearBtn) clearBtn.style.display = "block";
+    }
+
+    function deleteItemPrompt() {
+        alert("Para makapagsave ng changes nang 'Live', kailangan i-edit ang products.json sa GitHub.");
     }
 
     function searchFunction() {
@@ -156,9 +194,6 @@
         }
     }
 
-    // PARA SA LIVE UPDATES:
-    // Dahil static ang GitHub, ang "Add Product" button ay magbibigay sa iyo ng JSON code 
-    // na kailangan mong i-paste sa products.json mo sa GitHub.
     function addNewProduct() {
         const newItem = {
             name: document.getElementById('itemName').value,
@@ -169,12 +204,15 @@
             image: document.getElementById('itemImageLink').value
         };
 
-        console.log("Bagong Data para sa products.json:", newItem);
-        alert("Success! Para maging live, i-copy ang data sa console at i-update ang products.json sa GitHub.");
-    }
+        if(!newItem.name || !newItem.price) return alert("Paki-puno ang Name at Price.");
 
-    window.onload = loadData;
+        // I-print ang bagong JSON sa console para madaling i-copy paste sa GitHub
+        console.log("I-copy itong bago mong product entry:");
+        console.log(JSON.stringify(newItem, null, 2));
+        alert("Success! I-copy ang data mula sa Console (F12) at i-paste sa iyong products.json sa GitHub para mag-update ang lahat ng viewers.");
+    }
 </script>
+
 </body>
   </html>
 
