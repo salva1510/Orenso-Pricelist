@@ -182,9 +182,33 @@
         if(clearBtn) clearBtn.style.display = "block";
     }
 
-    function deleteItemPrompt() {
-        alert("Para makapagsave ng changes nang 'Live', kailangan i-edit ang products.json sa GitHub.");
+    async function deleteItem(index) {
+    if(!confirm("Sigurado ka bang buburahin ito sa Live listahan?")) return;
+
+    try {
+        const getRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+        });
+        const fileData = await getRes.json();
+        let items = JSON.parse(atob(fileData.content));
+
+        items.splice(index, 1); // Tanggalin ang item base sa index
+
+        await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            method: "PUT",
+            headers: { "Authorization": `token ${GITHUB_TOKEN}` },
+            body: JSON.stringify({
+                message: "Deleted an item",
+                content: btoa(JSON.stringify(items, null, 2)),
+                sha: fileData.sha
+            })
+        });
+        location.reload();
+    } catch (e) {
+        alert("Error deleting item.");
     }
+}
+
 
     function searchFunction() {
         let input = document.getElementById('searchInput').value.toUpperCase();
