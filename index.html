@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Pricelist App</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        input { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #007bff; color: white; }
+        tr:hover { background-color: #f1f1f1; }
+        .price { font-weight: bold; color: #28a745; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>My Pricelist</h2>
+    <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Maghanap ng produkto...">
+
+    <table id="priceTable">
+        <thead>
+            <tr>
+                <th>Produkto</th>
+                <th>Presyo</th>
+            </tr>
+        </thead>
+        <tbody id="productBody">
+            <tr><td>Kape (Small)</td><td class="price">₱25.00</td></tr>
+            <tr><td>Asukal (1kg)</td><td class="price">₱85.00</td></tr>
+            <tr><td>Gatas (Evap)</td><td class="price">₱45.00</td></tr>
+            <tr><td>Itlog (Large)</td><td class="price">₱9.00</td></tr>
+            <tr><td>Bigas (Sinandomeng)</td><td class="price">₱55.00</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+function searchFunction() {
+    let input = document.getElementById('searchInput').value.toUpperCase();
+    let table = document.getElementById('productBody');
+    let tr = table.getElementsByTagName('tr');
+
+    for (let i = 0; i < tr.length; i++) {
+        let td = tr[i].getElementsByTagName('td')[0];
+        if (td) {
+            let txtValue = td.textContent || td.innerText;
+            tr[i].style.display = txtValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+        }
+    }
+}
+</script>
+
+</body>
+</html>
