@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Pricelist with Images</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 600px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
+        
+        /* Settings & Inputs */
+        .settings-group { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px; font-size: 14px; color: #555; }
+        #currencySymbol { width: 50px; padding: 5px; border-radius: 5px; border: 1px solid #ddd; text-align: center; }
+
+        .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #eef0f2; }
+        input[type="text"], input[type="number"], input[type="file"] { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; background: white; }
+        
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.2s; }
+        #addBtn { background: #28a745; color: white; }
+        #exportBtn { background: #007bff; color: white; width: 100%; margin-bottom: 15px; }
+
+        /* Search Bar */
+        #searchInput { width: 100%; border: 2px solid #eef0f2; margin-bottom: 15px; box-sizing: border-box; }
+
+        /* Table & Image Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { background: #1a73e8; color: white; }
+        .product-img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; background: #eee; }
+        .price-tag { font-weight: bold; color: #28a745; }
+        .delete-btn { color: #dc3545; cursor: pointer; font-weight: bold; border: none; background: none; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Catalog Manager</h2>
+
+    <div class="settings-group">
+        <label>Currency:</label>
+        <input type="text" id="currencySymbol" value="₱" oninput="updateCurrency()">
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="itemName" placeholder="Product Name">
+        <input type="number" id="itemPrice" placeholder="Price">
+        <label style="font-size: 12px; color: #666;">Product Photo:</label>
+        <input type="file" id="itemImage" accept="image/*">
+        <button id="addBtn" onclick="processImageAndAdd()">+ Add to Catalog</button>
+    </div>
+
+    <hr style="border: 1px solid #f0f2f5; margin-bottom: 20px;">
+
+    <button id="exportBtn" onclick="exportToExcel()">📥 Download Excel (List Only)</button>
+    <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Search items...">
+
+    <table id="priceTable">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Item</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="productBody"></tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedCurrency = localStorage.getItem('appCurrency');
+        if (savedCurrency) document.getElementById('currencySymbol').value = savedCurrency;
+        displayItems();
+    });
+
+    function updateCurrency() {
+        localStorage.setItem('appCurrency', document.getElementById('currencySymbol').value);
+        displayItems();
+    }
+
+    // Converts image file to a string so it can be saved in LocalStorage
+    function processImageAndAdd() {
+        const file = document.getElementById('itemImage').files[0];
+        const name = document.getElementById('itemName').value;
+        const price = document.getElementById('itemPrice').value;
+
+        if (!name || !price) {
+            alert("Please enter Name and Price.");
+            return;
+        }
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                addItem(name, price, reader.result);
+            }
+            reader.readAsDataURL(file);
+        } else {
+            addItem(name, price, ""); // No image provided
+        }
+    }
+
+    function addItem(name, price, imageData) {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        items.push({ name, price, image: imageData });
+        localStorage.setItem('myPricelist', JSON.stringify(items));
+
+        // Reset fields
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemPrice').value = '';
+        document.getElementById('itemImage').value = '';
+        displayItems();
+    }
+
+    function displayItems() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        let symbol = document.getElementById('currencySymbol').value || '';
+        let tableBody = document.getElementById('productBody');
+        tableBody.innerHTML = '';
+
+        items.forEach((item, index) => {
+            let imgTag = item.image ? `<img src="${item.image}" class="product-img">` : `<div class="product-img"></div>`;
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${imgTag}</td>
+                    <td>${item.name}</td>
+                    <td class="price-tag">${symbol}${parseFloat(item.price).toLocaleString()}</td>
+                    <td><button class="delete-btn" onclick="deleteItem(${index})">&times;</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    function deleteItem(index) {
+        if(confirm("Delete this item?")) {
+            let items = JSON.parse(localStorage.getItem('myPricelist'));
+            items.splice(index, 1);
+            localStorage.setItem('myPricelist', JSON.stringify(items));
+            displayItems();
+        }
+    }
+
+    function searchFunction() {
+        let input = document.getElementById('searchInput').value.toUpperCase();
+        let rows = document.getElementById('productBody').getElementsByTagName('tr');
+        for (let row of rows) {
+            let text = row.getElementsByTagName('td')[1].textContent.toUpperCase();
+            row.style.display = text.includes(input) ? "" : "none";
+        }
+    }
+
+    function exportToExcel() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        if (items.length === 0) return alert("Empty list.");
+        let csvContent = "data:text/csv;charset=utf-8,Item,Price\n";
+        items.forEach(item => { csvContent += `${item.name},${item.price}\n`; });
+        let link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csvContent));
+        link.setAttribute("download", "Pricelist.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
+
