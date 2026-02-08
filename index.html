@@ -194,23 +194,72 @@
         }
     }
 
-    function addNewProduct() {
-        const newItem = {
-            name: document.getElementById('itemName').value,
-            qty: document.getElementById('itemQty').value,
-            price: document.getElementById('itemPrice').value,
-            status: document.getElementById('itemStatus').value,
-            expiry: document.getElementById('itemExpiry').value,
-            image: document.getElementById('itemImageLink').value
-        };
+    // --- CONFIGURATION ---
+const GITHUB_TOKEN = "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"; // Ang token na ginawa mo sa Step 1
+const GITHUB_USERNAME = "salva15";
+const REPO_NAME = "Orenso-Pricelist"; // Pangalan ng repository mo
+const FILE_PATH = "products.json";
 
-        if(!newItem.name || !newItem.price) return alert("Paki-puno ang Name at Price.");
+// --- AUTOMATIC LIVE SAVE FUNCTION ---
+async function addNewProduct() {
+    const name = document.getElementById('itemName').value;
+    const price = document.getElementById('itemPrice').value;
+    
+    if(!name || !price) return alert("Paki-puno ang Name at Price.");
 
-        // I-print ang bagong JSON sa console para madaling i-copy paste sa GitHub
-        console.log("I-copy itong bago mong product entry:");
-        console.log(JSON.stringify(newItem, null, 2));
-        alert("Success! I-copy ang data mula sa Console (F12) at i-paste sa iyong products.json sa GitHub para mag-update ang lahat ng viewers.");
+    const newItem = {
+        name: name,
+        qty: document.getElementById('itemQty').value,
+        price: price,
+        status: document.getElementById('itemStatus').value,
+        expiry: document.getElementById('itemExpiry').value,
+        image: document.getElementById('itemImageLink').value
+    };
+
+    const addBtn = document.getElementById('addBtn');
+    addBtn.innerText = "Saving to GitHub...";
+    addBtn.disabled = true;
+
+    try {
+        // 1. Kunin ang kasalukuyang laman ng products.json at ang 'sha' (ID) nito
+        const getRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+        });
+        const fileData = await getRes.json();
+        const currentContent = JSON.parse(atob(fileData.content)); // decode base64
+
+        // 2. Idagdag ang bagong item sa listahan
+        currentContent.push(newItem);
+
+        // 3. I-save pabalik sa GitHub
+        const putRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `token ${GITHUB_TOKEN}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: `Added new item: ${name}`,
+                content: btoa(JSON.stringify(currentContent, null, 2)), // encode to base64
+                sha: fileData.sha // kailangan ito para payagan ang update
+            })
+        });
+
+        if(putRes.ok) {
+            alert("Success! Live na ang bagong product.");
+            location.reload(); // I-refresh para makita ang pagbabago
+        } else {
+            throw new Error();
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Nagkaroon ng error sa pag-save. Check your Token or Internet.");
+    } finally {
+        addBtn.innerText = "+ Add Product (To Live)";
+        addBtn.disabled = false;
     }
+}
+
 </script>
 
 </body>
