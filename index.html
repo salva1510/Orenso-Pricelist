@@ -185,15 +185,19 @@
         displayItems();
     }
 
-    function displayItems() {
+        function displayItems() {
         let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
         let symbol = document.getElementById('currencySymbol').value || '';
         let tableBody = document.getElementById('productBody');
-        let totalVal = 0;
+        
+        // Dito natin inayos ang calculation
+        let totalVal = 0; 
         tableBody.innerHTML = '';
 
         items.forEach((item, index) => {
-            totalVal += item.price;
+            // Sinisiguro natin na Number ang computation para hindi mag-copy paste ng digits
+            totalVal += Number(item.price); 
+
             let bulkText = "";
             let bulkPriceMsg = "";
             if (item.bQty && item.bDisc) {
@@ -204,7 +208,7 @@
 
             let statusClass = item.status === "In Stock" ? "in-stock" : "out-stock";
             let imgTag = item.image ? 
-                `<img src="${item.image}" class="product-img" onclick="openModal('${item.image}', '${item.name}', '${bulkPriceMsg}', '${item.qty}', '${symbol}${item.price.toLocaleString()}')">` : 
+                `<img src="${item.image}" class="product-img" onclick="openModal('${item.image}', '${item.name}', '${bulkPriceMsg}', '${item.qty}', '${symbol}${Number(item.price).toLocaleString()}')">` : 
                 `<div style="width:50px;height:50px;background:#eee;border-radius:5px"></div>`;
 
             tableBody.innerHTML += `
@@ -215,15 +219,17 @@
                         <small style="color:#666">${item.qty}</small>
                         ${bulkText}
                     </td>
-                    <td class="price-tag">${symbol}${item.price.toLocaleString()}</td>
+                    <td class="price-tag">${symbol}${Number(item.price).toLocaleString()}</td>
                     <td class="no-print"><button class="delete-btn" onclick="deleteItem(${index})">&times;</button></td>
                 </tr>
             `;
         });
 
+        // I-update ang Summary Card
         document.getElementById('totalItems').innerText = items.length;
         document.getElementById('totalValue').innerText = symbol + totalVal.toLocaleString();
     }
+
 
     function openModal(img, name, bulk, qty, price) {
         document.getElementById('modalImg').src = img;
