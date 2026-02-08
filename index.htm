@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Smart Pricelist App</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 500px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
+        
+        /* Input Styles */
+        .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #eef0f2; }
+        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #1a73e8; box-shadow: 0 0 5px rgba(26,115,232,0.3); }
+        
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.2s; }
+        #addBtn { background: #28a745; color: white; margin-top: 5px; }
+        #addBtn:hover { background: #218838; }
+        
+        #exportBtn { background: #007bff; color: white; width: 100%; margin-bottom: 15px; }
+        #exportBtn:hover { background: #0069d9; }
+
+        /* Search Bar */
+        #searchInput { width: 100%; border: 2px solid #eef0f2; margin-bottom: 15px; box-sizing: border-box; background: #fff url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'); }
+
+        /* Table Styles */
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #1a73e8; color: white; }
+        .price-tag { font-weight: bold; color: #28a745; }
+        .delete-btn { color: #dc3545; cursor: pointer; font-weight: bold; border: none; background: none; font-size: 18px; }
+        .delete-btn:hover { color: #a71d2a; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Pricelist Manager</h2>
+
+    <div class="input-group">
+        <input type="text" id="itemName" placeholder="Pangalan ng Produkto (e.g. Asukal)">
+        <input type="number" id="itemPrice" placeholder="Presyo sa Piso (e.g. 50)">
+        <button id="addBtn" onclick="addItem()">+ Idagdag sa Listahan</button>
+    </div>
+
+    <hr style="border: 1px solid #f0f2f5; margin-bottom: 20px;">
+
+    <button id="exportBtn" onclick="exportToExcel()">📥 I-download bilang Excel (CSV)</button>
+    <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Maghanap ng item...">
+
+    <div class="table-wrapper">
+        <table id="priceTable">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Presyo</th>
+                    <th>Alisin</th>
+                </tr>
+            </thead>
+            <tbody id="productBody">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // 1. I-load ang data kapag binuksan ang browser
+    document.addEventListener('DOMContentLoaded', displayItems);
+
+    // 2. Function para magdagdag ng item
+    function addItem() {
+        let name = document.getElementById('itemName').value;
+        let price = document.getElementById('itemPrice').value;
+
+        if (name === '' || price === '') {
+            alert("Pakisuyong punan ang lahat ng box.");
+            return;
+        }
+
+        let item = { name: name, price: price };
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        items.push(item);
+        localStorage.setItem('myPricelist', JSON.stringify(items));
+
+        // Clear inputs
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemPrice').value = '';
+
+        displayItems();
+    }
+
+    // 3. Function para ipakita ang listahan sa table
+    function displayItems() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        let tableBody = document.getElementById('productBody');
+        tableBody.innerHTML = '';
+
+        items.forEach((item, index) => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td class="price-tag">₱${parseFloat(item.price).toLocaleString()}</td>
+                    <td><button class="delete-btn" onclick="deleteItem(${index})">&times;</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    // 4. Function para magbura ng item
+    function deleteItem(index) {
+        if(confirm("Sigurado ka bang buburahin ito?")) {
+            let items = JSON.parse(localStorage.getItem('myPricelist'));
+            items.splice(index, 1);
+            localStorage.setItem('myPricelist', JSON.stringify(items));
+            displayItems();
+        }
+    }
+
+    // 5. Function para sa Search
+    function searchFunction() {
+        let input = document.getElementById('searchInput').value.toUpperCase();
+        let tr = document.getElementById('productBody').getElementsByTagName('tr');
+
+        for (let i = 0; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName('td')[0];
+            if (td) {
+                let txtValue = td.textContent || td.innerText;
+                tr[i].style.display = txtValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
+    }
+
+    // 6. EXPORT TO EXCEL (CSV) FUNCTION
+    function exportToExcel() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        
+        if (items.length === 0) {
+            alert("Walang data na pwedeng i-export.");
+            return;
+        }
+
+        // Header ng CSV
+        let csvContent = "data:text/csv;charset=utf-8,Item,Presyo\n";
+
+        // Rows ng CSV
+        items.forEach(item => {
+            csvContent += `${item.name},${item.price}\n`;
+        });
+
+        // Trigger Download
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Aking_Pricelist.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
+
