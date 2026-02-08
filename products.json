@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Kape (3-in-1)",
+    "qty": "1 Box (12pcs)",
+    "price": 150,
+    "status": "In Stock",
+    "image": "images/kape.jpg"
+  },
+  {
+    "name": "Asukal",
+    "qty": "1kg",
+    "price": 85,
+    "status": "In Stock",
+    "image": "images/asukal.png"
+  }
+]
+
