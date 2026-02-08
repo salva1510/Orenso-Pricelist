@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricelist with Quantity Info</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 750px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
+        
+        .no-print { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .settings-group { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px; font-size: 14px; color: #555; }
+        #currencySymbol { width: 40px; padding: 5px; border-radius: 5px; border: 1px solid #ddd; }
+
+        .input-group { background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #eef0f2; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        input { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .full-width { grid-column: span 2; }
+        
+        .btn-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; }
+        #addBtn { background: #28a745; }
+        #exportBtn { background: #007bff; }
+        #printBtn { background: #6c757d; }
+        #clearBtn { background: #dc3545; }
+
+        #searchInput { width: 100%; border: 2px solid #eef0f2; padding: 10px; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
+
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { background: #1a73e8; color: white; }
+        .product-img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
+        .qty-info { color: #666; font-style: italic; font-size: 0.9em; }
+        .price-tag { font-weight: bold; color: #28a745; }
+        .delete-btn { color: #dc3545; cursor: pointer; border: none; background: none; font-size: 18px; }
+
+        @media print {
+            .no-print, .delete-btn { display: none !important; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; }
+            th { background: #f2f2f2 !important; color: black !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Product Pricelist</h2>
+
+    <div class="no-print">
+        <div class="settings-group">
+            <label>Currency:</label>
+            <input type="text" id="currencySymbol" value="₱" oninput="updateCurrency()">
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="itemName" placeholder="Item Name (e.g. Face Mask)">
+            <input type="text" id="itemQty" placeholder="Unit/Qty (e.g. per box / 50pcs)">
+            <input type="number" id="itemPrice" placeholder="Price">
+            <input type="file" id="itemImage" accept="image/*">
+            <button id="addBtn" class="full-width" onclick="processImageAndAdd()">+ Add to List</button>
+        </div>
+
+        <div class="btn-row">
+            <button id="exportBtn" onclick="exportToExcel()">Excel</button>
+            <button id="printBtn" onclick="window.print()">Print/PDF</button>
+            <button id="clearBtn" onclick="clearAll()">Clear All</button>
+        </div>
+        
+        <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Search items...">
+    </div>
+
+    <table id="priceTable">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Item Details</th>
+                <th>Price</th>
+                <th class="no-print"></th>
+            </tr>
+        </thead>
+        <tbody id="productBody"></tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedCurrency = localStorage.getItem('appCurrency');
+        if (savedCurrency) document.getElementById('currencySymbol').value = savedCurrency;
+        displayItems();
+    });
+
+    function updateCurrency() {
+        localStorage.setItem('appCurrency', document.getElementById('currencySymbol').value);
+        displayItems();
+    }
+
+    function processImageAndAdd() {
+        const file = document.getElementById('itemImage').files[0];
+        const name = document.getElementById('itemName').value;
+        const qty = document.getElementById('itemQty').value;
+        const price = document.getElementById('itemPrice').value;
+
+        if (!name || !price) return alert("Please enter Name and Price.");
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => addItem(name, qty, price, reader.result);
+            reader.readAsDataURL(file);
+        } else {
+            addItem(name, qty, price, "");
+        }
+    }
+
+    function addItem(name, qty, price, imageData) {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        items.push({ name, qty, price, image: imageData });
+        localStorage.setItem('myPricelist', JSON.stringify(items));
+        
+        // Reset fields
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemQty').value = '';
+        document.getElementById('itemPrice').value = '';
+        document.getElementById('itemImage').value = '';
+        displayItems();
+    }
+
+    function displayItems() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        let symbol = document.getElementById('currencySymbol').value || '';
+        let tableBody = document.getElementById('productBody');
+        tableBody.innerHTML = '';
+
+        items.forEach((item, index) => {
+            let imgTag = item.image ? `<img src="${item.image}" class="product-img">` : `<div style="width:60px;height:60px;background:#eee;border-radius:5px"></div>`;
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${imgTag}</td>
+                    <td>
+                        <strong>${item.name}</strong><br>
+                        <span class="qty-info">${item.qty ? item.qty : ''}</span>
+                    </td>
+                    <td class="price-tag">${symbol}${parseFloat(item.price).toLocaleString()}</td>
+                    <td class="no-print"><button class="delete-btn" onclick="deleteItem(${index})">&times;</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    function deleteItem(index) {
+        if(confirm("Delete this item?")) {
+            let items = JSON.parse(localStorage.getItem('myPricelist'));
+            items.splice(index, 1);
+            localStorage.setItem('myPricelist', JSON.stringify(items));
+            displayItems();
+        }
+    }
+
+    function clearAll() {
+        if(confirm("Are you sure? This will delete all items.")) {
+            localStorage.removeItem('myPricelist');
+            displayItems();
+        }
+    }
+
+    function searchFunction() {
+        let input = document.getElementById('searchInput').value.toUpperCase();
+        let rows = document.getElementById('productBody').getElementsByTagName('tr');
+        for (let row of rows) {
+            let text = row.textContent.toUpperCase();
+            row.style.display = text.includes(input) ? "" : "none";
+        }
+    }
+
+    function exportToExcel() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        if (items.length === 0) return alert("Empty list.");
+        let csvContent = "data:text/csv;charset=utf-8,Item,Unit/Qty,Price\n";
+        items.forEach(item => { csvContent += `${item.name},${item.qty},${item.price}\n`; });
+        let link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csvContent));
+        link.setAttribute("download", "Pricelist.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
+
