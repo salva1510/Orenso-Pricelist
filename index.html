@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory Manager Pro</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 10px; margin: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 650px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); box-sizing: border-box; }
+        h2 { text-align: center; color: #1a73e8; margin-top: 5px; }
+        
+        /* Admin Login Header */
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 10px; border: 1px solid #eee; }
+        #adminStatus { font-size: 12px; font-weight: bold; color: #555; }
+        #loginBtn { padding: 6px 15px; border-radius: 6px; border: none; color: white; cursor: pointer; font-size: 12px; font-weight: bold; }
+
+        /* Admin Section */
+        #adminSection { display: none; margin-bottom: 20px; }
+        .input-group { background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #eef0f2; display: flex; flex-direction: column; gap: 10px; }
+        .row { display: flex; gap: 10px; width: 100%; }
+        .row input, .row select { flex: 1; min-width: 0; }
+        label { font-size: 11px; font-weight: bold; color: #555; margin-bottom: -5px; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box; background: white; width: 100%; }
+        
+        .btn-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 14px; }
+        #addBtn { background: #28a745; margin-top: 5px; width: 100%; }
+        #exportBtn { background: #007bff; }
+        #printBtn { background: #6c757d; }
+        #clearBtn { background: #dc3545; display: none; }
+
+        /* Summary Dashboard */
+        .summary-card { background: #1a73e8; color: white; padding: 15px; border-radius: 10px; margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .summary-item { text-align: center; }
+        .summary-val { display: block; font-size: 1.2rem; font-weight: bold; }
+        .summary-label { font-size: 10px; opacity: 0.9; text-transform: uppercase; }
+
+        #searchInput { margin: 10px 0; border: 2px solid #eef0f2; width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; }
+
+        /* Table Styles */
+        .table-wrapper { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; min-width: 450px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { background: #f8f9fa; color: #555; font-size: 12px; }
+        
+        .product-img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; cursor: pointer; }
+        .price-tag { font-weight: bold; color: #28a745; white-space: nowrap; }
+        .status-badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; color: white; font-weight: bold; margin-left: 5px; vertical-align: middle; }
+        .in-stock { background: #28a745; }
+        .out-stock { background: #dc3545; }
+        .expiry-info { font-size: 11px; color: #666; margin-top: 2px; display: block; }
+        .expired { color: #dc3545; font-weight: bold; }
+        
+        .delete-btn { color: #dc3545; font-size: 22px; border: none; background: none; cursor: pointer; display: none; padding: 5px; }
+
+        /* MODAL / ZOOM STYLES */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; position: relative; }
+        .modal-info { padding: 20px; text-align: center; }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 30px; font-weight: bold; color: white; cursor: pointer; z-index: 1001; }
+
+        @media print {
+            .no-print, .delete-btn, .admin-header, .close-modal { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Smart Inventory Manager</h2>
+
+    <div class="admin-header no-print">
+        <span id="adminStatus">Mode: View Only</span>
+        <button id="loginBtn" onclick="toggleAdmin()" style="background:#444;">Admin Login</button>
+    </div>
+
+    <div id="adminSection" class="no-print">
+        <div class="settings-group" style="text-align: right; font-size: 12px; margin-bottom: 5px;">
+            <label>Currency:</label>
+            <input type="text" id="currencySymbol" value="₱" style="width:30px; padding:3px; display:inline-block;" oninput="updateCurrency()">
+        </div>
+        <div class="input-group">
+            <input type="text" id="itemName" placeholder="Item Name">
+            <div class="row">
+                <input type="text" id="itemQty" placeholder="Unit (e.g. Box)">
+                <input type="number" id="itemPrice" placeholder="Retail Price">
+            </div>
+            <div class="row">
+                <select id="itemStatus">
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                </select>
+                <input type="date" id="itemExpiry">
+            </div>
+            <input type="file" id="itemImage" accept="image/*">
+            <button id="addBtn" onclick="processImageAndAdd()">+ Add Product</button>
+        </div>
+    </div>
+
+    <div class="no-print">
+        <div class="btn-row">
+            <button id="exportBtn" onclick="exportToExcel()">Excel</button>
+            <button id="printBtn" onclick="window.print()">Print</button>
+            <button id="clearBtn" onclick="clearAll()">Clear All</button>
+        </div>
+        <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Search catalog...">
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-item">
+            <span class="summary-label">Total Items</span>
+            <span class="summary-val" id="totalItems">0</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Inventory Value</span>
+            <span class="summary-val" id="totalValue">₱0</span>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 60px;">Photo</th>
+                    <th>Details</th>
+                    <th style="width: 80px;">Price</th>
+                    <th id="actionHead" style="width: 40px; display:none;" class="no-print"></th>
+                </tr>
+            </thead>
+            <tbody id="productBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="close-modal">&times;</span>
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <img id="modalImg" src="" style="width:100%; max-height:300px; object-fit:contain; background:#f0f0f0; display:block;">
+        <div class="modal-info">
+            <h3 id="modalName" style="margin:0 0 10px 0; color:#1a73e8;"></h3>
+            <p id="modalStatusLabel" style="margin:5px 0;"></p>
+            <p id="modalQty" style="color:#666; font-size:0.9rem; margin:5px 0;"></p>
+            <p id="modalExpiry" style="font-size:0.9rem; margin:5px 0;"></p>
+            <p id="modalPrice" class="price-tag" style="font-size:1.5rem; margin:10px 0;"></p>
+            <button onclick="closeModal()" style="background:#6c757d; width:100%; margin-top:10px;">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isAdmin = false;
+    const ADMIN_PASSWORD = "123"; 
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLogin = localStorage.getItem('adminLoggedIn');
+        if (savedLogin === 'true') {
+            isAdmin = true;
+            applyAdminUI();
+        }
+        
+        const savedCurrency = localStorage.getItem('appCurrency');
+        if (savedCurrency) document.getElementById('currencySymbol').value = savedCurrency;
+        
+        displayItems();
+    });
+
+    function toggleAdmin() {
+        if (!isAdmin) {
+            let pass = prompt("Enter Admin Password:");
+            if (pass === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('adminLoggedIn', 'true');
+                applyAdminUI();
+                displayItems();
+            } else if (pass !== null) {
+                alert("Wrong password!");
+            }
+        } else {
+            if(confirm("Log out from Admin mode?")) {
+                isAdmin = false;
+                localStorage.removeItem('adminLoggedIn');
+                applyViewOnlyUI();
+                displayItems();
+            }
+        }
+    }
+
+    function applyAdminUI() {
+        document.getElementById('adminSection').style.display = "block";
+        document.getElementById('clearBtn').style.display = "block";
+        document.getElementById('adminStatus').innerText = "Mode: Admin (Edit)";
+        document.getElementById('loginBtn').innerText = "Logout";
+        document.getElementById('loginBtn').style.background = "#dc3545";
+    }
+
+    function applyViewOnlyUI() {
+        document.getElementById('adminSection').style.display = "none";
+        document.getElementById('clearBtn').style.display = "none";
+        document.getElementById('adminStatus').innerText = "Mode: View Only";
+        document.getElementById('loginBtn').innerText = "Admin Login";
+        document.getElementById('loginBtn').style.background = "#444";
+    }
+
+    function updateCurrency() {
+        localStorage.setItem('appCurrency', document.getElementById('currencySymbol').value);
+        displayItems();
+    }
+
+    function processImageAndAdd() {
+        const fileInput = document.getElementById('itemImage');
+        const name = document.getElementById('itemName').value;
+        const qty = document.getElementById('itemQty').value;
+        const price = document.getElementById('itemPrice').value;
+        const status = document.getElementById('itemStatus').value;
+        const expiry = document.getElementById('itemExpiry').value;
+
+        if (!name || !price) return alert("Paki-lagay ang Name at Price.");
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onloadend = () => addItem(name, qty, price, status, expiry, reader.result);
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            addItem(name, qty, price, status, expiry, "");
+        }
+    }
+
+    function addItem(name, qty, price, status, expiry, imageData) {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        items.push({ name, qty, price: Number(price), status, expiry, image: imageData });
+        localStorage.setItem('myPricelist', JSON.stringify(items));
+        
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemQty').value = '';
+        document.getElementById('itemPrice').value = '';
+        document.getElementById('itemExpiry').value = '';
+        document.getElementById('itemImage').value = '';
+        
+        displayItems();
+    }
+
+    function displayItems() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        let symbol = document.getElementById('currencySymbol').value || '';
+        let tableBody = document.getElementById('productBody');
+        let totalVal = 0;
+        tableBody.innerHTML = '';
+
+        document.getElementById('actionHead').style.display = isAdmin ? "table-cell" : "none";
+
+        items.forEach((item, index) => {
+            totalVal += Number(item.price);
+            let statusClass = item.status === "In Stock" ? "in-stock" : "out-stock";
+            
+            // Expiry Check
+            let expiryHtml = "";
+            let isExpired = false;
+            if (item.expiry) {
+                isExpired = new Date(item.expiry) <= new Date();
+                expiryHtml = `<span class="expiry-info ${isExpired ? 'expired' : ''}">EXP: ${item.expiry}</span>`;
+            }
+
+            let imgTag = item.image ? 
+                `<img src="${item.image}" class="product-img" onclick="openModal('${item.image}', '${item.name}', '${item.status}', '${item.qty}', '${item.expiry}', '${symbol}${Number(item.price).toLocaleString()}')">` : 
+                `<div style="width:50px;height:50px;background:#eee;border-radius:5px" onclick="openModal('', '${item.name}', '${item.status}', '${item.qty}', '${item.expiry}', '${symbol}${Number(item.price).toLocaleString()}')"></div>`;
+
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${imgTag}</td>
+                    <td>
+                        <strong style="font-size:14px;">${item.name}</strong>
+                        <span class="status-badge ${statusClass}">${item.status}</span><br>
+                        <small style="color:#666;">${item.qty}</small><br>
+                        ${expiryHtml}
+                    </td>
+                    <td class="price-tag">${symbol}${Number(item.price).toLocaleString()}</td>
+                    <td class="no-print" style="display: ${isAdmin ? 'table-cell' : 'none'}">
+                        <button class="delete-btn" style="display:block;" onclick="deleteItem(${index})">&times;</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('totalItems').innerText = items.length;
+        document.getElementById('totalValue').innerText = symbol + totalVal.toLocaleString();
+    }
+
+    // Modal Functions
+    function openModal(img, name, status, qty, expiry, price) {
+        document.getElementById('modalImg').src = img || 'https://via.placeholder.com/150?text=No+Image';
+        document.getElementById('modalName').innerText = name;
+        document.getElementById('modalQty').innerText = "Unit: " + (qty || "N/A");
+        document.getElementById('modalPrice').innerText = price;
+        
+        const statusLabel = document.getElementById('modalStatusLabel');
+        statusLabel.innerText = status;
+        statusLabel.className = "status-badge " + (status === "In Stock" ? "in-stock" : "out-stock");
+        
+        document.getElementById('modalExpiry').innerText = expiry ? "Expiry: " + expiry : "";
+        document.getElementById('imageModal').style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = "none";
+    }
+
+    function deleteItem(index) {
+        if (!isAdmin) return;
+        if(confirm("Burahin ang item na ito?")) {
+            let items = JSON.parse(localStorage.getItem('myPricelist'));
+            items.splice(index, 1);
+            localStorage.setItem('myPricelist', JSON.stringify(items));
+            displayItems();
+        }
+    }
+
+    function searchFunction() {
+        let input = document.getElementById('searchInput').value.toUpperCase();
+        let rows = document.getElementById('productBody').getElementsByTagName('tr');
+        for (let row of rows) {
+            row.style.display = row.textContent.toUpperCase().includes(input) ? "" : "none";
+        }
+    }
+
+    function clearAll() {
+        if (!isAdmin) return;
+        if(confirm("Buburahin lahat ng items sa listahan?")) {
+            localStorage.removeItem('myPricelist');
+            displayItems();
+        }
+    }
+
+    function exportToExcel() {
+        let items = localStorage.getItem('myPricelist') ? JSON.parse(localStorage.getItem('myPricelist')) : [];
+        let csv = "Item,Unit,Status,Price,Expiry\n";
+        items.forEach(i => csv += `"${i.name}","${i.qty}","${i.status}",${i.price},${i.expiry}\n`);
+        let link = document.createElement("a");
+        link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        link.download = "My_Inventory.csv";
+        link.click();
+    }
+</script>
+</body>
+</html>
+
