@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory - Live Version</title>
+    <style>
+        /* Manatili ang iyong lumang CSS styles dito */
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 10px; margin: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 650px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); box-sizing: border-box; }
+        h2 { text-align: center; color: #1a73e8; margin-top: 5px; }
+        .table-wrapper { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; min-width: 450px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .product-img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+        .price-tag { font-weight: bold; color: #28a745; }
+        .status-badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; color: white; font-weight: bold; }
+        .in-stock { background: #28a745; }
+        .out-stock { background: #dc3545; }
+        .summary-card { background: #1a73e8; color: white; padding: 15px; border-radius: 10px; margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .summary-item { text-align: center; }
+        #searchInput { margin: 10px 0; border: 2px solid #eef0f2; width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Smart Inventory Manager (Live)</h2>
+
+    <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Maghanap ng produkto...">
+
+    <div class="summary-card">
+        <div class="summary-item"><span>Total Items</span><br><b id="totalItems">0</b></div>
+        <div class="summary-item"><span>Inventory Value</span><br><b id="totalValue">₱0</b></div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Details</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody id="productBody">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const JSON_URL = 'products.json'; // Dito kukuha ng data ang website
+    const currency = "₱";
+
+    async function loadInventory() {
+        try {
+            const response = await fetch(JSON_URL);
+            const items = await response.json();
+            displayItems(items);
+        } catch (error) {
+            console.error("Error loading inventory:", error);
+            document.getElementById('productBody').innerHTML = "<tr><td colspan='3'>Error loading data. Make sure products.json exists.</td></tr>";
+        }
+    }
+
+    function displayItems(items) {
+        let tableBody = document.getElementById('productBody');
+        let totalVal = 0;
+        tableBody.innerHTML = '';
+
+        items.forEach((item) => {
+            totalVal += Number(item.price);
+            let statusClass = item.status === "In Stock" ? "in-stock" : "out-stock";
+            
+            // Image path check
+            let imgSource = item.image ? item.image : "https://via.placeholder.com/50";
+
+            tableBody.innerHTML += `
+                <tr>
+                    <td><img src="${imgSource}" class="product-img"></td>
+                    <td>
+                        <strong>${item.name}</strong><br>
+                        <span class="status-badge ${statusClass}">${item.status}</span><br>
+                        <small>${item.qty}</small>
+                    </td>
+                    <td class="price-tag">${currency}${Number(item.price).toLocaleString()}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('totalItems').innerText = items.length;
+        document.getElementById('totalValue').innerText = currency + totalVal.toLocaleString();
+    }
+
+    function searchFunction() {
+        let input = document.getElementById('searchInput').value.toUpperCase();
+        let rows = document.getElementById('productBody').getElementsByTagName('tr');
+        for (let row of rows) {
+            row.style.display = row.textContent.toUpperCase().includes(input) ? "" : "none";
+        }
+    }
+
+    // Load data pagbukas ng page
+    loadInventory();
+</script>
+</body>
+</html>
+
