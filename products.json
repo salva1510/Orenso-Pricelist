@@ -1,4 +1,4 @@
- [
+[
   {
     "name": "Alaska All Purpose Cream",
     "qty": "1 Box (12pcs)",
@@ -14,5 +14,13 @@
     "status": "In Stock",
     "expiry": "2026-10-15",
     "image": "https://i.imgur.com/anotherimage.jpg"
+  },
+  {
+    "name": "Alaska All Purpose Cream",
+    "qty": "1box(12pcs)",
+    "price": 1500,
+    "status": "In Stock",
+    "expiry": "2026-05-15",
+    "image": "https://imgur.com/a/QTY76fn"
   }
- ]
+]
