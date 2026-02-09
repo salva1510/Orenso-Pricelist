@@ -159,4 +159,42 @@ function exportToExcel() {
     link.download = "inventory.csv";
     link.click();
 }
+// Dagdag na function para sa pag-add ng product
+function addNewProduct() {
+    const name = document.getElementById('itemName').value;
+    const qty = document.getElementById('itemQty').value;
+    const price = document.getElementById('itemPrice').value;
+    const status = document.getElementById('itemStatus').value;
+    const expiry = document.getElementById('itemExpiry').value;
+    const image = document.getElementById('itemImageLink').value;
+
+    if (!name || !price) return alert("Paki-puno ang Name at Price!");
+
+    // Gagawa ng bagong object
+    const newProduct = {
+        name: name,
+        qty: qty,
+        price: Number(price),
+        status: status,
+        expiry: expiry,
+        image: image
+    };
+
+    // Idadagdag sa pansamantalang listahan
+    currentLiveItems.push(newProduct);
+    displayItems(currentLiveItems);
+
+    // I-generate ang JSON code para i-copy paste mo na lang sa GitHub
+    const finalJSON = JSON.stringify(currentLiveItems, null, 2);
+    
+    // I-copy sa clipboard para i-paste mo na lang sa products.json sa GitHub
+    navigator.clipboard.writeText(finalJSON).then(() => {
+        alert("Product added to list! Nakopya na rin ang bagong JSON code. I-paste mo na lang ito sa products.json file mo sa GitHub para maging permanent.");
+    });
+
+    // I-clear ang inputs
+    document.getElementById('itemName').value = '';
+    document.getElementById('itemPrice').value = '';
+}
+
 
