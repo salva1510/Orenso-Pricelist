@@ -3,8 +3,8 @@ let basket = [];
 let currentLiveItems = [];
 
 // --- CONFIGURATION ---
-const ADMIN_PHONE = "639123456789"; // Palitan mo ng number mo
-const FB_USERNAME = "iyong.fb.username"; // Palitan mo ng FB username mo
+const ADMIN_PHONE = "639154290207"; // Palitan mo ng number mo
+const FB_USERNAME = "kram.samot.2024"; // Palitan mo ng FB username mo
 const JSON_URL = 'products.json'; 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -123,7 +123,7 @@ function sendOrder(platform) {
 function toggleAdmin() {
     if (!isAdmin) {
         let pass = prompt("Enter Admin Password:");
-        if (pass === "123") {
+        if (pass === "salva1234") {
             isAdmin = true;
             localStorage.setItem('adminLoggedIn', 'true');
             applyAdminUI();
