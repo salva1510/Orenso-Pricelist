@@ -3,8 +3,8 @@ let basket = {}; // Changed to Object to track quantities by name
 let currentLiveItems = [];
 
 // --- CONFIGURATION ---
-const ADMIN_PHONE = "639123456789"; 
-const FB_USERNAME = "iyong.fb.username"; 
+const ADMIN_PHONE = "639153290207"; 
+const FB_USERNAME = "kram.samot.2024"; 
 const JSON_URL = 'products.json'; 
 
 document.addEventListener('DOMContentLoaded', () => {
