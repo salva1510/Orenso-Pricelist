@@ -11,6 +11,27 @@
 <div class="container">
     <h2>Inventory Catalog</h2>
 
+    <div id="bannerCarousel" class="banner-carousel no-print">
+        <div class="carousel-track" id="carouselTrack">
+            </div>
+    </div>
+
+    <div class="admin-header no-print">
+        <span id="adminStatus" style="font-size:12px;">Customer Mode</span>
+        <button id="loginBtn" onclick="toggleAdmin()" style="background:#444;">Admin Login</button>
+    </div>
+    ```
+
+---
+
+### 2. I-update ang `style.css`
+Idagdag ang mga styles na ito para sa "pabalik-balik" (infinite loop) na animation.
+
+```css
+/* Carousel Styles */
+
+
+
     <div class="admin-header no-print">
         <span id="adminStatus" style="font-size:12px;">Customer Mode</span>
         <button id="loginBtn" onclick="toggleAdmin()" style="background:#444;">Admin Login</button>
