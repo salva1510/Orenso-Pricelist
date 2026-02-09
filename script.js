@@ -197,4 +197,27 @@ function searchFunction() {
     let rows = document.getElementById('productBody').getElementsByTagName('tr');
     for (let row of rows) { row.style.display = row.textContent.toUpperCase().includes(val) ? "" : "none"; }
 }
+// Sa loob ng loadData() function, dagdagan ito:
+async function loadData() {
+    try {
+        const res = await fetch(JSON_URL + '?nocache=' + new Date().getTime());
+        currentLiveItems = await res.json();
+        displayItems(currentLiveItems);
+        setupCarousel(currentLiveItems); // <--- Idagdag ito
+    } catch (e) { console.error(e); }
+}
+
+function setupCarousel(items) {
+    const track = document.getElementById('carouselTrack');
+    // Para maging infinite loop, dodoblehin natin ang items sa view
+    const carouselItems = [...items, ...items]; 
+    
+    track.innerHTML = carouselItems.map(item => `
+        <div class="carousel-item">
+            <img src="${item.image || 'https://via.placeholder.com/60'}">
+            <p>${item.name}</p>
+        </div>
+    `).join('');
+}
+
 
