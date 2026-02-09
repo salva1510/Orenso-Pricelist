@@ -1,24 +1,18 @@
-[
+ [
   {
-    "name": "Alaska All Purpose Creamer)",
+    "name": "Alaska All Purpose Cream",
     "qty": "1 Box (12pcs)",
     "price": 1500,
     "status": "In Stock",
-    "image": "received_4391901104399999.jpeg"
+    "expiry": "2026-12-01",
+    "image": "https://i.imgur.com/yourimage.jpg"
   },
   {
     "name": "Fresh Milk",
-    "qty": "1 box/36pcs",
+    "qty": "1 Box (36pcs)",
     "price": 1500,
     "status": "In Stock",
-    "image": "received_1231518272416902.jpeg"
-  },
-  {
-    "name": "Red Pizza Toppings",
-    "qty": "1 box/4pcs",
-    "price": 899,
-    "status": "In Stock",
-    "image": "https://imgur.com/a/yBYxWK4"
+    "expiry": "2026-10-15",
+    "image": "https://i.imgur.com/anotherimage.jpg"
   }
-]
-
+ ]
