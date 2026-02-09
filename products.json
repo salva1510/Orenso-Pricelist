@@ -2,6 +2,7 @@
   {
     "name": "Fresh Milk",
     "qty": "1 Box (36pcs)",
+    "weight": "1L",
     "price": 1500,
     "status": "In Stock",
     "expiry": "2026-10-15",
@@ -10,6 +11,7 @@
   {
     "name": "Alaska All Purpose Cream",
     "qty": "1box(12pcs)",
+    "weight": "1L",
     "price": 1500,
     "status": "In Stock",
     "expiry": "2026-05-15",
