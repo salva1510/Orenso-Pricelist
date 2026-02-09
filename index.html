@@ -36,8 +36,8 @@
     <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Maghanap ng produkto..." style="margin-bottom:10px;">
 
     <div class="summary-card no-print">
-        <div class="summary-item"><span>Items</span><span class="summary-val" id="totalItems">0</span></div>
-        <div class="summary-item"><span>Value</span><span class="summary-val" id="totalValue">₱0</span></div>
+        <div class="summary-item"><span>Total Items</span><span class="summary-val" id="totalItems">0</span></div>
+        <div class="summary-item"><span>Stock Value</span><span class="summary-val" id="totalValue">₱0</span></div>
     </div>
 
     <div class="table-wrapper">
@@ -71,13 +71,16 @@
             <input type="number" id="customerContact" placeholder="Contact Number (Required)">
             <input type="number" id="customerGcash" placeholder="GCash Number (Optional)">
         </div>
-        <div id="basketList" style="max-height:150px; overflow-y:auto; border-top:1px solid #eee; padding-top:10px;"></div>
-        <div style="font-weight:bold; padding:10px 0; border-top:2px solid #eee;">Total: <span id="basketTotal">₱0</span></div>
+        <div id="basketList" style="max-height:250px; overflow-y:auto; border-top:1px solid #eee; padding-top:10px;"></div>
+        <div style="font-weight:bold; padding:15px 0; border-top:2px solid #eee; display:flex; justify-content:space-between; font-size:1.2rem;">
+            <span>TOTAL:</span>
+            <span id="basketTotal">₱0</span>
+        </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <button onclick="sendOrder('whatsapp')" style="background:#28a745;">WhatsApp</button>
             <button onclick="sendOrder('messenger')" style="background:#0084ff;">Messenger</button>
         </div>
-        <button onclick="toggleBasketModal()" style="background:#6c757d; width:100%; margin-top:10px;">Isara</button>
+        <button onclick="toggleBasketModal()" style="background:#6c757d; width:100%; margin-top:10px;">Ipagpatuloy ang pagbili</button>
     </div>
 </div>
 
