@@ -12,6 +12,13 @@
     "price": 1500,
     "status": "In Stock",
     "image": "received_1231518272416902.jpeg"
+  },
+  {
+    "name": "Red Pizza Toppings",
+    "qty": "1 box/4pcs",
+    "price": 899,
+    "status": "In Stock",
+    "image": "https://imgur.com/a/yBYxWK4"
   }
 ]
 
