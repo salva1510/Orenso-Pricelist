@@ -43,4 +43,29 @@ th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; vertica
 .delete-btn { color: #dc3545; font-size: 20px; border: none; background: none; cursor: pointer; }
 
 @media print { .no-print { display: none !important; } }
+.product-img { 
+    width: 60px; 
+    height: 60px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+    background: #eee; 
+    cursor: pointer; 
+    transition: 0.3s;
+}
+
+.product-img:hover {
+    opacity: 0.8;
+}
+
+/* Siguraduhin na ang modal ay laging nasa gitna at responsive */
+.modal-content {
+    position: relative;
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
              
