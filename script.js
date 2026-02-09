@@ -3,8 +3,8 @@ let basket = [];
 let currentLiveItems = [];
 
 // --- CONFIGURATION ---
-const ADMIN_PHONE = "639123456789"; // Iyong WhatsApp
-const FB_USERNAME = "iyong.fb.username"; // Iyong FB Username
+const ADMIN_PHONE = "639153290207"; // Iyong WhatsApp
+const FB_USERNAME = "kram.samot.2024"; // Iyong FB Username
 const JSON_URL = 'products.json'; 
 
 document.addEventListener('DOMContentLoaded', () => {
