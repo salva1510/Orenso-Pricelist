@@ -7,40 +7,35 @@ h2 { text-align: center; color: #1a73e8; margin: 5px 0; }
 #adminStatus { font-size: 12px; font-weight: bold; color: #555; }
 #loginBtn { padding: 6px 15px; border-radius: 6px; border: none; color: white; cursor: pointer; font-size: 12px; font-weight: bold; }
 
-/* Admin Input Section */
+/* Admin Section */
 #adminSection { display: none; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #eef0f2; }
 .input-group { display: flex; flex-direction: column; gap: 8px; }
 .row { display: flex; gap: 8px; }
-input, select { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box; }
+input, select, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box; font-family: inherit; }
 
 button { padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; }
 #addBtn { background: #28a745; width: 100%; margin-top: 5px; }
 
-/* Main Table */
+/* Table & Images */
 .table-wrapper { width: 100%; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 400px; }
 th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
 .product-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; background: #eee; cursor: pointer; }
 
-/* Dashboard Summary */
-.summary-card { background: #1a73e8; color: white; padding: 15px; border-radius: 10px; margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr; }
-.summary-item { text-align: center; }
-.summary-val { display: block; font-size: 1.2rem; font-weight: bold; }
-
-/* Floating Basket Icon */
+/* Floating Basket */
 #basketFloat { position: fixed; bottom: 25px; right: 25px; background: #28a745; color: white; width: 60px; height: 60px; border-radius: 50%; display: none; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 1000; }
 #basketCount { position: absolute; top: 0; right: 0; background: red; color: white; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
 
-/* Modals */
+/* Modal Styles */
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; }
 .modal-content { background: white; width: 100%; max-width: 420px; border-radius: 15px; padding: 20px; box-sizing: border-box; position: relative; max-height: 90vh; overflow-y: auto; }
 
-/* Qty Controls */
 .qty-btn { background: #eee; color: #333; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; border: none; font-weight: bold; cursor: pointer; }
 .status-badge { font-size: 10px; padding: 3px 6px; border-radius: 4px; color: white; text-transform: uppercase; }
 .in-stock { background: #28a745; }
 .out-stock { background: #dc3545; }
 
-.pay-label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; }
+.pay-label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; text-align: left; }
+.delivery-info { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 10px; border: 1px solid #ffeeba; }
 
 @media print { .no-print { display: none !important; } }
