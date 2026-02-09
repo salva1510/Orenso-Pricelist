@@ -264,6 +264,63 @@
             row.style.display = row.textContent.toUpperCase().includes(input) ? "" : "none";
         }
     }
+    <div id="basketModal" class="modal" onclick="toggleBasketModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; color:#1a73e8;">🛒 Ang Iyong Basket</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+            <input type="text" id="customerName" placeholder="Pangalan (Required)" style="border:1px solid #ddd;">
+            <input type="number" id="customerContact" placeholder="Contact Number (e.g. 0912...)" style="border:1px solid #ddd;">
+            <input type="number" id="customerGcash" placeholder="GCash Number (Optional)" style="border:1px solid #ddd;">
+        </div>
+
+        <div id="basketList" style="max-height: 200px; overflow-y: auto; margin-bottom:15px; border-top:1px solid #eee;"></div>
+        
+        <div style="border-top: 2px solid #1a73e8; padding-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.1rem;">
+                <span>TOTAL:</span>
+                <span id="basketTotal">₱0</span>
+            </div>
+            <button onclick="sendOrder()" style="background:#28a745; width:100%; margin-top:15px; padding:15px; font-size:1rem;">
+                I-send ang Order via WhatsApp
+            </button>
+            <button onclick="toggleBasketModal()" style="background:#6c757d; width:100%; margin-top:10px;">Isara</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // I-update ang 'sendOrder' function sa iyong script section
+    function sendOrder() {
+        const name = document.getElementById('customerName').value;
+        const contact = document.getElementById('customerContact').value;
+        const gcash = document.getElementById('customerGcash').value;
+        
+        if(!name || !contact) {
+            return alert("Paki-puno ang Pangalan at Contact Number.");
+        }
+        
+        if(basket.length === 0) return;
+
+        let msg = `*BAGONG ORDER MULA SA WEBSITE*\n`;
+        msg += `----------------------------\n`;
+        msg += `👤 *Customer:* ${name.toUpperCase()}\n`;
+        msg += `📞 *Contact:* ${contact}\n`;
+        if(gcash) msg += `💰 *GCash No:* ${gcash}\n`;
+        msg += `----------------------------\n`;
+        msg += `*MGA ORDER:*\n`;
+        
+        let total = 0;
+        basket.forEach(item => {
+            msg += `- ${item.name} (₱${item.price.toLocaleString()})\n`;
+            total += item.price;
+        });
+        
+        msg += `\n*TOTAL NA BAYARIN: ₱${total.toLocaleString()}*`;
+        
+        // I-send sa WhatsApp
+        window.open(`https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
 </script>
 </body>
 </html>
