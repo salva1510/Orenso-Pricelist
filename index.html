@@ -300,6 +300,93 @@ async function addNewProduct() {
         addBtn.disabled = false;
     }
 }
+    let basket = [];
+const ADMIN_PHONE = "639123456789"; // PALITAN MO ITO NG IYONG NUMBER (Dapat simula sa 63)
+
+// Function para ipakita ang Order Button sa Viewers
+function displayItems(items) {
+    let tableBody = document.getElementById('productBody');
+    tableBody.innerHTML = '';
+    
+    items.forEach((item, index) => {
+        let statusClass = item.status === "In Stock" ? "in-stock" : "out-stock";
+        let isOutOfStock = item.status !== "In Stock";
+
+        tableBody.innerHTML += `
+            <tr>
+                <td><img src="${item.image || 'https://via.placeholder.com/50'}" class="product-img"></td>
+                <td>
+                    <strong>${item.name}</strong><br>
+                    <span class="status-badge ${statusClass}">${item.status}</span>
+                </td>
+                <td class="price-tag">₱${Number(item.price).toLocaleString()}</td>
+                <td>
+                    ${!isAdmin ? `
+                        <button onclick="addToBasket(${index}, '${item.name}', ${item.price})" 
+                                style="background:#1a73e8; padding:5px 10px; font-size:12px;"
+                                ${isOutOfStock ? 'disabled style="background:#ccc"' : ''}>
+                            + Basket
+                        </button>` : ''}
+                    ${isAdmin ? `<button class="delete-btn" onclick="deleteItem(${index})">&times;</button>` : ''}
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function addToBasket(id, name, price) {
+    basket.push({ id, name, price });
+    updateBasketUI();
+    document.getElementById('basketFloat').style.display = 'block';
+}
+
+function updateBasketUI() {
+    document.getElementById('basketCount').innerText = basket.length;
+    let itemsDiv = document.getElementById('basketItems');
+    let total = 0;
+    
+    itemsDiv.innerHTML = basket.map((item, i) => {
+        total += Number(item.price);
+        return `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span>${item.name}</span>
+                    <span>₱${item.price.toLocaleString()} 
+                    <button onclick="removeFromBasket(${i})" style="color:red; background:none; padding:0 5px;">x</button></span>
+                </div>`;
+    }).join('');
+    
+    document.getElementById('basketTotal').innerText = total.toLocaleString();
+}
+
+function removeFromBasket(index) {
+    basket.splice(index, 1);
+    updateBasketUI();
+    if(basket.length === 0) toggleBasketModal();
+}
+
+function toggleBasketModal() {
+    const modal = document.getElementById('basketModal');
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+}
+
+// DITO MAPUPUNTA SA ADMIN ANG ORDER
+function sendOrder() {
+    if(basket.length === 0) return alert("Walang laman ang basket!");
+
+    let message = "HELLO ADMIN, GUSTO KO PONG UMORDER:\n\n";
+    let total = 0;
+    
+    basket.forEach(item => {
+        message += `- ${item.name} (₱${item.price.toLocaleString()})\n`;
+        total += Number(item.price);
+    });
+    
+    message += `\nTOTAL: ₱${total.toLocaleString()}`;
+    
+    // WhatsApp API Link
+    const whatsappUrl = `https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+}
+    
 
 </script>
 
