@@ -90,6 +90,23 @@
         </table>
     </div>
 </div>
+    <th class="view-only-cell">Order</th>
+
+<div id="basketFloat" onclick="toggleBasketModal()" style="position:fixed; bottom:20px; right:20px; background:#28a745; color:white; padding:15px; border-radius:50%; shadow: 0 4px 10px rgba(0,0,0,0.3); cursor:pointer; display:none; z-index:999;">
+    🛒 <span id="basketCount">0</span>
+</div>
+
+<div id="basketModal" class="modal" onclick="toggleBasketModal()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="padding:20px;">
+        <h3>Ang Iyong Basket</h3>
+        <div id="basketItems"></div>
+        <hr>
+        <p><strong>Total: ₱<span id="basketTotal">0</span></strong></p>
+        <button onclick="sendOrder()" style="background:#28a745; width:100%; padding:10px;">I-send ang Order via WhatsApp</button>
+        <button onclick="toggleBasketModal()" style="background:#6c757d; width:100%; margin-top:10px;">Close</button>
+    </div>
+</div>
+    
 
 <script>
     let isAdmin = false;
