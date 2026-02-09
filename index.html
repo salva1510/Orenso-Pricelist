@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Inventory Catalog</h2>
+
+    <div class="admin-header no-print">
+        <span id="adminStatus">Mode: Customer View</span>
+        <button id="loginBtn" onclick="toggleAdmin()" style="background:#444;">Admin Login</button>
+    </div>
+
+    <div id="adminSection">
+        <div class="input-group">
+            <input type="text" id="itemName" placeholder="Product Name">
+            <div class="row">
+                <input type="text" id="itemQty" placeholder="Unit (e.g. 1 Box)">
+                <input type="text" id="itemWeight" placeholder="Weight (e.g. 500g)">
+            </div>
+            <div class="row">
+                <select id="itemStatus">
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                </select>
+                <input type="date" id="itemExpiry">
+            </div>
+            <input type="text" id="itemImageLink" placeholder="Paste Imgur Link (Direct Link)">
+            <button id="addBtn" onclick="addNewProduct()">+ Add and Copy JSON</button>
+        </div>
+    </div>
+
+    <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Search product...">
+
+    <div class="summary-card no-print">
+        <div class="summary-item"><span>Items</span><span class="summary-val" id="totalItems">0</span></div>
+        <div class="summary-item"><span>Value</span><span class="summary-val" id="totalValue">₱0</span></div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th class="no-print">Action</th>
+                </tr>
+            </thead>
+            <tbody id="productBody"></tbody>
+        </table>
+        <div class="no-print" style="margin-top:10px;">
+            <button id="exportBtn" onclick="exportToExcel()" style="width:48%;">Excel</button>
+            <button id="printBtn" onclick="window.print()" style="width:48%;">Print</button>
+        </div>
+    </div>
+</div>
+
+<div id="basketFloat" onclick="toggleBasketModal()">🛒 <span id="basketCount">0</span></div>
+
+<div id="productViewModal" class="modal" onclick="closeProductView()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span onclick="closeProductView()" style="position:absolute; right:15px; top:10px; font-size:24px; cursor:pointer;">&times;</span>
+        <img id="viewImage" src="" style="width:100%; max-height:250px; object-fit:contain; border-radius:10px; margin-bottom:10px;">
+        <h3 id="viewName" style="margin:5px 0; color:#1a73e8;"></h3>
+        <p id="viewQty" style="color:#666; margin:2px 0; font-size:14px;"></p>
+        <p id="viewWeight" style="color:#666; font-weight:bold; margin:2px 0; font-size:14px;"></p>
+        <div id="viewStatus" style="margin:5px 0;"></div>
+        <p id="viewExpiry" style="color:red; font-size:12px; margin:5px 0;"></p>
+        <h2 id="viewPrice" style="color:#28a745; margin:10px 0;"></h2>
+        <button id="addFromView" style="background:#1a73e8; width:100%; padding:12px; font-weight:bold;">+ Add to Basket</button>
+    </div>
+</div>
+
+<div id="basketModal" class="modal" onclick="toggleBasketModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3>🛒 Order Details</h3>
+        <input type="text" id="customerName" placeholder="Your Name" style="margin-bottom:10px;">
+        <div id="basketList" style="margin-bottom:10px; max-height:150px; overflow-y:auto;"></div>
+        <div style="font-weight:bold; border-top:2px solid #eee; padding:10px 0;">Total: <span id="basketTotal">₱0</span></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <button onclick="sendOrder('whatsapp')" style="background:#28a745;">WhatsApp</button>
+            <button onclick="sendOrder('messenger')" style="background:#0084ff;">Messenger</button>
+        </div>
+        <button onclick="toggleBasketModal()" style="background:#6c757d; width:100%; margin-top:10px;">Close</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
