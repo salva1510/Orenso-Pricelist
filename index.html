@@ -102,6 +102,23 @@
         <p id="viewQty" style="color:#666; margin:5px 0;"></p>
         <div id="viewStatus" style="margin-bottom:10px;"></div>
         <p id="viewExpiry" style="color:red; font-size:12px; margin:5px 0;"></p>
+        <p id="viewQty" style="color:#666; margin:5px 0;"></p>
+<p id="viewWeight" style="color:#666; font-weight:bold; margin:5px 0;"></p> ```
+
+---
+
+### 3. `script.js`
+I-update natin ang `displayItems`, `openProductView`, at `addNewProduct` functions.
+
+**Sa `displayItems` (Dagdagan ang list display):**
+```javascript
+// Sa loob ng loop ng displayItems
+<td>
+    <strong>${item.name}</strong><br>
+    <span class="status-badge ${statusClass}">${item.status}</span><br>
+    <small>${item.qty || ''} ${item.weight ? '| ' + item.weight : ''}</small>
+</td>
+        
         <h2 id="viewPrice" style="color:#28a745; margin:10px 0;"></h2>
         <button id="addFromView" onclick="" style="background:#1a73e8; width:100%; padding:12px; color:white; border:none; border-radius:8px; font-weight:bold;">+ Add to Basket</button>
     </div>
