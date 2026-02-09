@@ -90,6 +90,18 @@
         </div>
     </div>
 </div>
+    <div id="productViewModal" class="modal" onclick="closeProductView()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="text-align: center;">
+        <span onclick="closeProductView()" style="position:absolute; right:15px; top:10px; font-size:24px; cursor:pointer;">&times;</span>
+        <img id="viewImage" src="" style="width:100%; max-height:300px; object-fit:contain; border-radius:10px; margin-bottom:15px;">
+        <h3 id="viewName" style="margin:5px 0; color:#1a73e8;"></h3>
+        <p id="viewQty" style="color:#666; margin:5px 0;"></p>
+        <div id="viewStatus" style="margin-bottom:10px;"></div>
+        <p id="viewExpiry" style="color:red; font-size:12px; margin:5px 0;"></p>
+        <h2 id="viewPrice" style="color:#28a745; margin:10px 0;"></h2>
+        <button id="addFromView" onclick="" style="background:#1a73e8; width:100%; padding:12px; color:white; border:none; border-radius:8px; font-weight:bold;">+ Add to Basket</button>
+    </div>
+    </div>
 
 <script src="script.js"></script>
 </body>
