@@ -1,10 +1,10 @@
-
 [
   {
     "name": "Alaska All Purpose Cream",
     "qty": "1 Box (12pcs)",
     "weight": "250ml/pc",
-    "price": 1500,
+    "pricePiece": 130,
+    "priceBox": 1500,
     "status": "In Stock",
     "expiry": "2026-12-01",
     "image": "https://i.imgur.com/5Qpclja.jpeg"
@@ -13,10 +13,10 @@
     "name": "Fresh Milk",
     "qty": "1 Box (36pcs)",
     "weight": "250ml/pc",
-    "price": 1500,
+    "pricePiece": 45,
+    "priceBox": 1500,
     "status": "In Stock",
     "expiry": "2026-12-01",
     "image": "https://i.imgur.com/yAhg6pQ.jpeg"
   }
 ]
-
