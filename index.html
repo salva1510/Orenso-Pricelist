@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Manager - Lalamove Ready</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Inventory Catalog</h2>
+
+    <div id="bannerCarousel" class="banner-carousel no-print">
+        <div class="carousel-track" id="carouselTrack">
+            </div>
+    </div>
+
+    <div class="admin-header no-print">
+        <span id="adminStatus" style="font-size:12px;">Customer Mode</span>
+        <button id="loginBtn" onclick="toggleAdmin()" style="background:#444;">Admin Login</button>
+    </div>
+
+    <div id="adminSection">
+        <div class="input-group">
+            <input type="text" id="itemName" placeholder="Product Name">
+            <div class="row"><input type="text" id="itemQty" placeholder="Unit (Box)"><input type="text" id="itemWeight" placeholder="Weight (e.g. 500g)"></div>
+            <div class="row"><input type="number" id="itemPrice" placeholder="Price"><select id="itemStatus"><option>In Stock</option><option>Out of Stock</option></select></div>
+            <input type="date" id="itemExpiry"><input type="text" id="itemImageLink" placeholder="Imgur Direct Link"><button id="addBtn" onclick="addNewProduct()">+ Add & Copy JSON</button>
+        </div>
+    </div>
+
+    <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Maghanap ng produkto..." style="margin-bottom:15px;">
+
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Photo</th><th>Details</th><th>Price</th><th>Add</th></tr></thead>
+            <tbody id="productBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="basketFloat" onclick="toggleBasketModal()">🛒 <span id="basketCount">0</span></div>
+
+<div id="productViewModal" class="modal" onclick="closeProductView()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
+        <img id="viewImage" src="" style="width:100%; max-height:200px; object-fit:contain; border-radius:10px;">
+        <h3 id="viewName" style="margin:10px 0; color:#1a73e8;"></h3>
+        <p id="viewQty" style="margin:2px; font-size:13px;"></p>
+        <p id="viewWeight" style="margin:2px; font-size:13px; font-weight:bold;"></p>
+        <div id="viewStatus"></div>
+        <h2 id="viewPrice" style="color:#28a745; margin:10px 0;"></h2>
+        <button id="addFromView" style="background:#1a73e8; width:100%; padding:12px;">+ Add to Basket</button>
+    </div>
+</div>
+
+<div id="basketModal" class="modal" onclick="toggleBasketModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin:0 0 10px 0; text-align:center;">🛒 Checkout Details</h3>
+        
+        <div class="delivery-info">
+            ⚠️ <strong>Note:</strong> Deliveries are via Lalamove. Shipping fee is paid by the customer upon arrival.
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="customerName" placeholder="Full Name (Required)">
+            <input type="number" id="customerContact" placeholder="Contact Number (Required)">
+            <textarea id="customerAddress" placeholder="Complete Delivery Address (Required)" rows="2"></textarea>
+            <input type="text" id="customerLandmark" placeholder="Landmark (e.g. Near Brgy. Hall)">
+            
+            <label class="pay-label">PAYMENT METHOD:</label>
+            <select id="paymentMethod">
+                <option value="GCash">GCash</option>
+                <option value="Maya">Maya</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+            </select>
+        </div>
+
+        <div id="basketList" style="margin-top:15px; border-top:1px solid #eee;"></div>
+        
+        <div style="font-weight:bold; padding:15px 0; border-top:2px solid #eee; display:flex; justify-content:space-between; font-size:1.1rem;">
+            <span>TOTAL:</span><span id="basketTotal">₱0</span>
+        </div>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <button onclick="sendOrder('whatsapp')" style="background:#28a745;">WhatsApp</button>
+            <button onclick="sendOrder('messenger')" style="background:#0084ff;">Messenger</button>
+        </div>
+        <button onclick="toggleBasketModal()" style="background:#6c757d; width:100%; margin-top:10px;">Bumalik sa Shop</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
