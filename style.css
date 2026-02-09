@@ -1,0 +1,313 @@
+/* GENERAL STYLES */
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    background: #f0f2f5; 
+    padding: 10px; 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+}
+
+.container { 
+    width: 100%; 
+    max-width: 650px; 
+    background: white; 
+    padding: 15px; 
+    border-radius: 15px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    box-sizing: border-box; 
+}
+
+h2 { 
+    text-align: center; 
+    color: #1a73e8; 
+    margin: 5px 0; 
+}
+
+/* BANNER CAROUSEL STYLES */
+.banner-carousel { 
+    width: 100%; 
+    overflow: hidden; 
+    background: #fff; 
+    border-radius: 12px; 
+    margin-bottom: 15px; 
+    border: 1px solid #eee; 
+    height: 130px; 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+}
+
+.carousel-track { 
+    display: flex; 
+    width: max-content; 
+    animation: scroll 25s linear infinite; 
+}
+
+.carousel-item { 
+    width: 120px; 
+    padding: 10px; 
+    flex-shrink: 0; 
+    text-align: center; 
+}
+
+.carousel-item img { 
+    width: 100%; 
+    height: 80px; /* Inadjust para mas malinaw */
+    object-fit: contain; 
+    border-radius: 8px; 
+}
+
+.carousel-item p { 
+    font-size: 10px; 
+    margin: 5px 0 0; 
+    font-weight: bold; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+@keyframes scroll { 
+    0% { transform: translateX(0); } 
+    100% { transform: translateX(-50%); } 
+}
+
+.banner-carousel:hover .carousel-track {
+    animation-play-state: paused;
+}
+
+/* ADMIN HEADER - PINALINAW ANG KULAY */
+.admin-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 15px; 
+    background: #2c3e50; 
+    padding: 12px 15px; 
+    border-radius: 10px; 
+    border: 1px solid #1a252f;
+    color: white !important; /* Siguradong puti ang text */
+}
+
+#adminStatus {
+    font-weight: bold;
+    font-size: 13px;
+    color: #ffffff !important;
+}
+
+#adminSection { 
+    display: none; 
+    margin-bottom: 20px; 
+    background: #f8f9fa; 
+    padding: 15px; 
+    border-radius: 10px; 
+    border: 1px solid #eee; 
+}
+
+.input-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+}
+
+.row { 
+    display: flex; 
+    gap: 8px; 
+}
+
+input, select, textarea { 
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    font-size: 14px; 
+    width: 100%; 
+    box-sizing: border-box; 
+    font-family: inherit;
+}
+
+button { 
+    padding: 10px; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: 0.2s; 
+}
+
+#loginBtn {
+    background: #444; 
+    color: white; 
+    border: 1px solid #666;
+    padding: 6px 15px;
+}
+
+#addBtn { 
+    background: #28a745; 
+    color: white;
+    width: 100%; 
+    margin-top: 5px; 
+}
+
+/* PRODUCT TABLE STYLES */
+.table-wrapper { 
+    width: 100%; 
+    overflow-x: auto; 
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    min-width: 400px; 
+}
+
+th, td { 
+    padding: 10px; 
+    text-align: left; 
+    border-bottom: 1px solid #eee; 
+    vertical-align: middle; 
+}
+
+.product-img { 
+    width: 70px; /* Ginawang mas malaki nang kaunti */
+    height: 70px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+    background: #f0f0f0; /* Light gray background habang loading */
+    cursor: pointer; 
+    display: block;
+}
+
+/* PIECE / BOX BUTTONS */
+.order-options { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px; 
+}
+
+.opt-btn { 
+    background: #1a73e8; 
+    color: white; 
+    border: none; 
+    padding: 6px; 
+    border-radius: 5px; 
+    font-size: 10px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    text-align: center;
+}
+
+.opt-btn:hover { 
+    opacity: 0.8; 
+}
+
+/* BADGES */
+.status-badge { 
+    font-size: 10px; 
+    padding: 3px 6px; 
+    border-radius: 4px; 
+    color: white; 
+    text-transform: uppercase; 
+    font-weight: bold;
+}
+
+.in-stock { background: #28a745; }
+.out-stock { background: #dc3545; }
+
+/* BASKET FLOAT */
+#basketFloat { 
+    position: fixed; 
+    bottom: 25px; 
+    right: 25px; 
+    background: #28a745; 
+    color: white; 
+    width: 60px; 
+    height: 60px; 
+    border-radius: 50%; 
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    font-size: 24px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+    cursor: pointer; 
+    z-index: 1000; 
+}
+
+#basketCount { 
+    position: absolute; 
+    top: 0; 
+    right: 0; 
+    background: red; 
+    color: white; 
+    font-size: 11px; 
+    width: 22px; 
+    height: 22px; 
+    border-radius: 50%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    border: 2px solid white; 
+}
+
+/* MODAL STYLES */
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 2000; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.7); 
+    justify-content: center; 
+    align-items: center; 
+    padding: 15px; 
+}
+
+.modal-content { 
+    background: white; 
+    width: 100%; 
+    max-width: 420px; 
+    border-radius: 15px; 
+    padding: 20px; 
+    box-sizing: border-box; 
+    max-height: 90vh; 
+    overflow-y: auto; 
+    position: relative;
+}
+
+.qty-btn { 
+    background: #eee; 
+    color: #333; 
+    width: 28px; 
+    height: 28px; 
+    border-radius: 50%; 
+    display: inline-flex; 
+    justify-content: center; 
+    align-items: center; 
+    border: none; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+
+.delivery-info { 
+    background: #fff3cd; 
+    color: #856404; 
+    padding: 10px; 
+    border-radius: 8px; 
+    font-size: 12px; 
+    margin-bottom: 10px; 
+    border: 1px solid #ffeeba; 
+}
+
+.pay-label { 
+    font-size: 12px; 
+    font-weight: bold; 
+    color: #555; 
+    margin-top: 10px; 
+    display: block; 
+}
+
+@media print { 
+    .no-print { display: none !important; } 
+  }
+
