@@ -25,6 +25,7 @@ async function loadData() {
     }
 }
 
+// Palitan ang displayItems function para maging clickable ang image
 function displayItems(items) {
     let tableBody = document.getElementById('productBody');
     let totalVal = 0;
@@ -37,25 +38,49 @@ function displayItems(items) {
 
         tableBody.innerHTML += `
             <tr>
-                <td><img src="${img}" class="product-img" onerror="this.src='https://via.placeholder.com/60?text=Error'"></td>
-                <td>
+                <td><img src="${img}" class="product-img" onclick="openProductView(${index})" onerror="this.src='https://via.placeholder.com/60'"></td>
+                <td onclick="openProductView(${index})" style="cursor:pointer;">
                     <strong>${item.name}</strong><br>
                     <span class="status-badge ${statusClass}">${item.status}</span><br>
-                    <small style="color:#666">${item.qty || ''}</small>
-                    ${item.expiry ? `<br><small style="color:red">EXP: ${item.expiry}</small>` : ''}
+                    <small>${item.qty || ''}</small>
                 </td>
-                <td class="price-tag">₱${Number(item.price).toLocaleString()}</td>
-                <td class="no-print">
-                    ${isAdmin ? 
-                        `<button class="delete-btn" onclick="alert('I-edit ang products.json para magbura.')">&times;</button>` : 
-                        `<button onclick="addToBasket('${item.name}', ${item.price})" style="background:#1a73e8; padding:8px; font-size:11px; color:white; border-radius:5px; border:none; cursor:pointer;">+ Basket</button>`
-                    }
+                <td style="font-weight:bold; color:#28a745">₱${item.price.toLocaleString()}</td>
+                <td>
+                    ${isAdmin ? `<button onclick="deleteItem(${index})" style="background:none; color:red; font-size:18px; border:none;">&times;</button>` : 
+                    `<button onclick="addToBasket('${item.name}', ${item.price})" style="background:#1a73e8; padding:5px 10px; font-size:12px; color:white; border:none; border-radius:5px;">+ Basket</button>`}
                 </td>
             </tr>
         `;
     });
     document.getElementById('totalItems').innerText = items.length;
     document.getElementById('totalValue').innerText = "₱" + totalVal.toLocaleString();
+}
+
+// Bagong function para sa pag-open ng Product Details
+function openProductView(index) {
+    const item = currentLiveItems[index];
+    document.getElementById('viewImage').src = item.image || 'https://via.placeholder.com/60';
+    document.getElementById('viewName').innerText = item.name;
+    document.getElementById('viewQty').innerText = item.qty || 'No unit specified';
+    document.getElementById('viewPrice').innerText = "₱" + item.price.toLocaleString();
+    document.getElementById('viewExpiry').innerText = item.expiry ? "Expiry: " + item.expiry : "";
+    
+    // Status Badge sa Modal
+    const statusClass = item.status === "In Stock" ? "in-stock" : "out-stock";
+    document.getElementById('viewStatus').innerHTML = `<span class="status-badge ${statusClass}">${item.status}</span>`;
+    
+    // Add to Basket button sa loob ng Modal
+    const addBtn = document.getElementById('addFromView');
+    addBtn.onclick = function() {
+        addToBasket(item.name, item.price);
+        closeProductView();
+    };
+
+    document.getElementById('productViewModal').style.display = 'flex';
+}
+
+function closeProductView() {
+    document.getElementById('productViewModal').style.display = 'none';
 }
 
 function addToBasket(name, price) {
