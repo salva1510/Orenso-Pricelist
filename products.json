@@ -1,23 +1,13 @@
 [
   {
-    "name": "Alaska All Purpose Cream",
-    "qty": "1 Box (12pcs)",
-    "weight": "250ml/pc",
-    "pricePiece": 130,
+    "name": "Alaska All Purpose Creamer",
+    "qty": "1 Box (36pcs)",
+    "weight": "250ml",
+    "pricePiece": 50,
     "priceBox": 1500,
     "status": "In Stock",
     "expiry": "2026-12-01",
     "image": "https://i.imgur.com/5Qpclja.jpeg"
-  },
-  {
-    "name": "Fresh Milk",
-    "qty": "1 Box (36pcs)",
-    "weight": "250ml/pc",
-    "pricePiece": 45,
-    "priceBox": 1500,
-    "status": "In Stock",
-    "expiry": "2026-12-01",
-    "image": "https://i.imgur.com/yAhg6pQ.jpeg"
   },
   {
   "name": "Maximo Choco",
