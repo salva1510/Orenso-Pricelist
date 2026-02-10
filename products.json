@@ -28,5 +28,15 @@
     "status": "In Stock",
     "expiry": "2026-08-31",
     "image": "https://i.postimg.cc/7PSSwVmL/received-2076145466556547.jpg"
+  },
+  {
+    "name": "Simply Cheetos Puffs",
+    "qty": "1box(12packs)",
+    "weight": "226grams",
+    "pricePiece": 120,
+    "priceBox": 1300,
+    "status": "In Stock",
+    "expiry": "2026-10-31",
+    "image": "https://i.postimg.cc/7PSSwVmL/received-2076145466556547.jpg"
   }
 ]
