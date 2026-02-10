@@ -1,0 +1,52 @@
+body { font-family: 'Segoe UI', sans-serif; background: #FFF9E6; margin: 0; padding: 10px; display: flex; justify-content: center; }
+.container { width: 100%; max-width: 600px; background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.1); }
+h2 { text-align: center; color: #E67E22; margin-bottom: 20px; }
+
+/* SLIDER CSS */
+.slider-container { width: 100%; height: 250px; position: relative; overflow: hidden; border-radius: 15px; background: #000; margin-bottom: 20px; }
+.slider-track { display: flex; height: 100%; transition: transform 0.5s ease-in-out; }
+.slider-item { min-width: 100%; height: 100%; position: relative; }
+.slider-item img { width: 100%; height: 100%; object-fit: contain; background: #222; }
+.slider-item p { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: #fff; padding: 10px; margin: 0; text-align: center; font-size: 14px; }
+.slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.3); border: none; color: white; padding: 10px; cursor: pointer; border-radius: 50%; }
+.next { right: 10px; } .prev { left: 10px; }
+.slider-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+.dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; }
+.dot.active { background: #FFB000; width: 20px; border-radius: 10px; }
+
+/* ADMIN SECTION */
+.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+#loginBtn { background: #FFB000; color: #fff; border: none; padding: 5px 15px; border-radius: 15px; cursor: pointer; font-weight: bold; }
+#adminSection { display: none; background: #fdf2e9; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
+.input-group input, .input-group textarea, .input-group select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.row { display: flex; gap: 10px; }
+#saveBtn { width: 100%; padding: 10px; background: #28a745; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+/* SEARCH & GRID */
+.search-bar input { width: 100%; padding: 12px; border: 2px solid #FFB000; border-radius: 25px; box-sizing: border-box; margin-bottom: 20px; outline: none; }
+.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+.product-card { background: #fff; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #fff3e0; }
+.product-card img { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+.product-card p { margin: 5px 0; font-weight: bold; font-size: 14px; text-align: center; }
+
+/* BADGES & BUTTONS */
+.status-badge { font-size: 10px; padding: 3px 8px; border-radius: 10px; align-self: center; margin-bottom: 5px; }
+.in-stock { background: #e8f5e9; color: #2e7d32; }
+.out-stock { background: #ffebee; color: #c62828; }
+.btn-action { width: 100%; padding: 8px; border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-size: 12px; }
+.btn-piece { background: #FFB000; margin-bottom: 5px; }
+.btn-box { background: #E67E22; }
+.btn-edit { background: #ffc107; color: #000; margin-top: 5px; }
+.btn-delete { background: #dc3545; color: #fff; margin-top: 5px; }
+
+/* BASKET */
+#basketFloat { position: fixed; bottom: 20px; right: 20px; background: #E67E22; width: 60px; height: 60px; border-radius: 30px; display: none; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 999; cursor: pointer; }
+#basketCount { position: absolute; top: 0; right: 0; background: red; font-size: 11px; width: 22px; height: 22px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid #fff; }
+
+/* MODALS */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 10px; }
+.modal-content { background: #fff; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; box-sizing: border-box; overflow-y: auto; max-height: 90vh; }
+.btn-wa { background: #25D366; color: white; flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; }
+.btn-msg { background: #0084FF; color: white; flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; }
+
+@media print { .no-print { display: none; } }
