@@ -2,21 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Treats Cheezy Pricelist</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#FFB000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Cheezy Pricelist">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Manager - Premium Catalog</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-    <h2>Treats Cheezy Pricelist</h2>
+    <h2>Inventory Catalog</h2>
 
     <div class="slider-container no-print">
         <div id="imageSlider" class="slider-track"></div>
@@ -52,7 +45,8 @@
             <input type="text" id="itemImageLink" placeholder="Image Direct Link">
             
             <div id="adminActionButtons" style="display: flex; gap: 10px;">
-                <button id="addBtn" onclick="addNewProduct()" style="flex: 2; background: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">+ Add Product</button>
+                <button id="addBtn" onclick="addNewProduct()" style="flex: 2;">+ Add Product</button>
+                <button id="cancelEditBtn" onclick="clearAdminForm()" style="display:none; flex: 1; background: #666;">Cancel</button>
             </div>
         </div>
     </div>
@@ -73,7 +67,7 @@
         <img id="viewImage" src="" class="view-img-large">
         <h3 id="viewName"></h3>
         
-        <p id="viewDesc" style="font-size: 14px; color: #555; background: #fdf2e9; padding: 12px; border-radius: 8px; border-left: 5px solid #FFB000; margin-bottom: 15px; font-style: italic;"></p>
+        <p id="viewDesc" style="font-size: 14px; color: #555; background: #f0f7ff; padding: 12px; border-radius: 8px; border-left: 5px solid #1a73e8; margin-bottom: 15px; font-style: italic;"></p>
 
         <div class="view-details">
             <p id="viewQty"></p>
@@ -106,4 +100,5 @@
 
 <script src="script.js"></script>
 </body>
-</html>
+          </html>
+          
