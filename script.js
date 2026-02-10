@@ -56,8 +56,14 @@ function goToSlide(index) {
 function updateSliderPosition() {
     const track = document.getElementById('imageSlider');
     const dots = document.querySelectorAll('.dot');
+    // Ginamit ang transform para sa smooth animation
     track.style.transform = `translateX(-${currentSlide * 100}%)`;
-    dots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+    
+    // I-update ang active dot style (sa CSS mo ito i-style)
+    dots.forEach((dot, i) => {
+        dot.style.background = (i === currentSlide) ? "#fff" : "rgba(255,255,255,0.3)";
+        dot.style.width = (i === currentSlide) ? "20px" : "8px"; // Sosyal na elongated dots
+    });
 }
 
 // NEW: Swipe functionality for Mobile
