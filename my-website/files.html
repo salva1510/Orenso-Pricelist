@@ -2,216 +2,144 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FilesFlex - My Files</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FilesFlex</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  color: #222;
-}
-
-header {
-  background: #111827;
-  color: white;
-  padding: 18px;
-}
-
-header h1 {
+  background: #f5f7fa;
   margin: 0;
-  font-size: 22px;
-}
-
-.container {
-  max-width: 900px;
-  margin: auto;
   padding: 20px;
 }
 
-.status {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px #0001;
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
 }
 
 .file {
   background: white;
-  padding: 16px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px #0001;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 
-.file-name {
+.name {
   font-weight: bold;
-  word-break: break-word;
-}
-
-.file-size {
-  color: #777;
-  font-size: 13px;
-  margin-top: 5px;
+  margin-bottom: 10px;
+  word-break: break-all;
 }
 
 button {
-  margin-top: 12px;
-  padding: 10px 15px;
   border: 0;
-  border-radius: 8px;
+  padding: 10px 15px;
+  border-radius: 7px;
   background: #2563eb;
   color: white;
   cursor: pointer;
+  margin-right: 5px;
 }
 
 button:hover {
   background: #1d4ed8;
 }
 
-#error {
-  color: #dc2626;
-}
-
-video {
-  width: 100%;
-  max-height: 400px;
-  margin-top: 12px;
-  border-radius: 10px;
-  background: black;
+#status {
+  text-align: center;
+  margin: 20px 0;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>📁 FilesFlex</h1>
-</header>
-
 <div class="container">
 
-  <div class="status">
-    <strong>Storage Status:</strong>
-    <span id="status">Checking...</span>
-  </div>
+<h1>📁 FilesFlex</h1>
 
-  <div id="error"></div>
+<div id="status">Loading files...</div>
 
-  <h2>My Files</h2>
-
-  <div id="files">
-    Loading files...
-  </div>
+<div id="files"></div>
 
 </div>
 
 <script>
 
-const API = "https://filesflex.emviemsalva.workers.dev";
+const API = "/api/test";
 
 async function loadFiles() {
 
   const status = document.getElementById("status");
-  const filesBox = document.getElementById("files");
-  const error = document.getElementById("error");
+  const container = document.getElementById("files");
 
   try {
 
-    const response = await fetch(API + "/api/test");
+    const response = await fetch(API);
 
     if (!response.ok) {
-      throw new Error("HTTP " + response.status);
+      throw new Error("API error " + response.status);
     }
 
     const data = await response.json();
 
-    console.log(data);
+    container.innerHTML = "";
 
-    if (data.success) {
-
-      status.textContent = "Connected ✅";
-
-      if (!data.files || data.files.length === 0) {
-        filesBox.innerHTML = "<p>No files found.</p>";
-        return;
-      }
-
-      filesBox.innerHTML = "";
-
-      data.files.forEach(file => {
-
-        const div = document.createElement("div");
-        div.className = "file";
-
-        const name = document.createElement("div");
-        name.className = "file-name";
-        name.textContent = file.key;
-
-        const size = document.createElement("div");
-        size.className = "file-size";
-        size.textContent =
-          "Size: " + formatBytes(file.size);
-
-        div.appendChild(name);
-        div.appendChild(size);
-
-        /*
-          Temporary:
-          /api/test only gives us the filename.
-          We will add the real download/stream endpoint
-          after this is working.
-        */
-
-        filesBox.appendChild(div);
-
-      });
-
-    } else {
-
-      status.textContent = "Connection failed ❌";
-      error.textContent = "API returned success: false";
-
+    if (!data.files || data.files.length === 0) {
+      status.textContent = "No files found.";
+      return;
     }
 
-  } catch (e) {
+    status.textContent = data.files.length + " file(s) found.";
 
-    console.error(e);
+    data.files.forEach(file => {
 
-    status.textContent = "Error ❌";
+      const div = document.createElement("div");
+      div.className = "file";
 
-    error.textContent =
-      "Hindi ma-connect sa FilesFlex API: " + e.message;
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = file.key;
 
-    filesBox.innerHTML = "";
+      const open = document.createElement("button");
+      open.textContent = "Open";
+
+      open.onclick = () => {
+        window.location.href =
+          "/api/file?key=" + encodeURIComponent(file.key);
+      };
+
+      const download = document.createElement("button");
+      download.textContent = "Download";
+
+      download.onclick = () => {
+        window.location.href =
+          "/api/download?key=" + encodeURIComponent(file.key);
+      };
+
+      div.appendChild(name);
+      div.appendChild(open);
+      div.appendChild(download);
+
+      container.appendChild(div);
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.textContent =
+      "Unable to load files: " + error.message;
 
   }
+
 }
-
-
-function formatBytes(bytes) {
-
-  if (!bytes) return "0 B";
-
-  const units = ["B", "KB", "MB", "GB"];
-
-  const i = Math.floor(
-    Math.log(bytes) / Math.log(1024)
-  );
-
-  return (
-    (bytes / Math.pow(1024, i)).toFixed(2)
-    + " "
-    + units[i]
-  );
-}
-
 
 loadFiles();
 
