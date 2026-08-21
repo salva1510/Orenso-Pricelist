@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>Movies - Sing Star Collection</title>
+
+<style>
+
+:root{
+  --bg:#08090d;
+  --panel:#11131a;
+  --panel2:#171a22;
+  --border:#292d38;
+  --text:#f5f7fb;
+  --muted:#a7adba;
+  --accent:#e50914;
+  --blue:#2563eb;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  padding:20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #07080b,
+      #0c0e13 55%,
+      #08090d
+    );
+
+  color:var(--text);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
+
+/* HEADER */
+
+.header{
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:15px;
+
+  padding:
+    10px 0 25px;
+
+  border-bottom:
+    1px solid var(--border);
+}
+
+.logo{
+  font-size:25px;
+  font-weight:900;
+}
+
+.logo span{
+  color:var(--accent);
+}
+
+.back{
+  background:var(--panel2);
+
+  border:
+    1px solid var(--border);
+
+  color:white;
+
+  text-decoration:none;
+
+  padding:10px 15px;
+
+  border-radius:9px;
+}
+
+
+/* TITLE */
+
+.title{
+  margin-top:35px;
+
+  margin-bottom:10px;
+
+  font-size:
+    clamp(
+      30px,
+      6vw,
+      52px
+    );
+}
+
+.description{
+  color:var(--muted);
+
+  margin-bottom:30px;
+}
+
+
+/* SEARCH */
+
+.search{
+  width:100%;
+
+  padding:14px 16px;
+
+  background:var(--panel2);
+
+  border:
+    1px solid var(--border);
+
+  border-radius:10px;
+
+  color:white;
+
+  outline:none;
+
+  margin-bottom:25px;
+
+  font-size:15px;
+}
+
+.search::placeholder{
+  color:#777d89;
+}
+
+
+/* STATUS */
+
+.status{
+  color:var(--muted);
+
+  margin-bottom:20px;
+
+  font-size:14px;
+}
+
+
+/* MOVIES */
+
+.movies{
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(280px,1fr)
+    );
+
+  gap:18px;
+}
+
+
+/* MOVIE CARD */
+
+.movie{
+  background:
+    linear-gradient(
+      145deg,
+      var(--panel2),
+      var(--panel)
+    );
+
+  border:
+    1px solid var(--border);
+
+  border-radius:16px;
+
+  padding:15px;
+
+  overflow:hidden;
+}
+
+.movie-name{
+  font-weight:bold;
+
+  font-size:16px;
+
+  word-break:break-word;
+
+  line-height:1.4;
+
+  margin-bottom:7px;
+}
+
+.movie-size{
+  color:var(--muted);
+
+  font-size:13px;
+
+  margin-bottom:13px;
+}
+
+
+/* VIDEO */
+
+.video{
+  display:block;
+
+  width:100%;
+
+  max-height:500px;
+
+  background:#000;
+
+  border-radius:10px;
+
+  margin-bottom:12px;
+}
+
+
+/* BUTTONS */
+
+.buttons{
+  display:flex;
+
+  gap:8px;
+}
+
+.buttons a{
+  flex:1;
+
+  text-align:center;
+
+  padding:11px;
+
+  border-radius:8px;
+
+  text-decoration:none;
+
+  font-weight:bold;
+
+  font-size:13px;
+}
+
+.open{
+  background:var(--accent);
+
+  color:white;
+}
+
+.download{
+  background:var(--blue);
+
+  color:white;
+}
+
+.open:hover{
+  background:#ff1723;
+}
+
+.download:hover{
+  background:#3574ee;
+}
+
+
+/* EMPTY */
+
+.empty{
+  background:var(--panel);
+
+  border:
+    1px solid var(--border);
+
+  border-radius:15px;
+
+  padding:50px 20px;
+
+  text-align:center;
+
+  color:var(--muted);
+}
+
+
+/* MOBILE */
+
+@media(max-width:650px){
+
+  body{
+    padding:12px;
+  }
+
+  .header{
+    align-items:flex-start;
+  }
+
+  .buttons{
+    flex-direction:column;
+  }
+
+  .buttons a{
+    width:100%;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<header class="header">
+
+<div class="logo">
+SING <span>STAR</span>
+</div>
+
+<a
+href="/"
+class="back"
+>
+🏠 Home
+</a>
+
+</header>
+
+
+<h1 class="title">
+🎬 Movies
+</h1>
+
+
+<p class="description">
+English & Tagalog movies
+</p>
+
+
+<input
+id="movieSearch"
+class="search"
+type="search"
+placeholder="🔎 Search movie..."
+>
+
+
+<div
+id="status"
+class="status"
+>
+Loading movies...
+</div>
+
+
+<div
+id="movies"
+class="movies"
+>
+</div>
+
+
+</div>
+
+
+<script>
+
+
+async function loadMovies(){
+
+const status =
+document.getElementById(
+"status"
+);
+
+const container =
+document.getElementById(
+"movies"
+);
+
+
+try{
+
+const response =
+await fetch(
+"/api/files"
+);
+
+
+if(
+!response.ok
+){
+
+throw new Error(
+"API error: " +
+response.status
+);
+
+}
+
+
+const data =
+await response.json();
+
+
+container.innerHTML =
+"";
+
+
+if(
+!data.files ||
+data.files.length === 0
+){
+
+status.textContent =
+"No movies found.";
+
+container.innerHTML = `
+
+<div class="empty">
+
+🎬
+
+<br><br>
+
+Wala pang movies
+sa R2 bucket.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+/*
+Only video files
+are shown here.
+*/
+
+const movies =
+data.files.filter(
+file =>
+isVideo(file.key)
+);
+
+
+if(
+movies.length === 0
+){
+
+status.textContent =
+"No video files found.";
+
+container.innerHTML = `
+
+<div class="empty">
+
+🎬 Wala pang video
+files sa Movies.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+status.textContent =
+movies.length +
+" movie(s) found";
+
+
+movies.forEach(
+movie =>
+createMovieCard(
+movie
+)
+);
+
+
+}catch(error){
+
+console.error(
+error
+);
+
+status.textContent =
+"❌ Error";
+
+container.innerHTML = `
+
+<div class="empty">
+
+❌ Hindi ma-load
+ang movies.
+
+<br><br>
+
+${escapeHTML(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+
+function createMovieCard(
+file
+){
+
+const container =
+document.getElementById(
+"movies"
+);
+
+
+const card =
+document.createElement(
+"article"
+);
+
+card.className =
+"movie";
+
+
+const name =
+document.createElement(
+"div"
+);
+
+name.className =
+"movie-name";
+
+name.textContent =
+"🎬 " +
+file.key;
+
+
+const size =
+document.createElement(
+"div"
+);
+
+size.className =
+"movie-size";
+
+size.textContent =
+formatSize(
+file.size
+);
+
+
+const video =
+document.createElement(
+"video"
+);
+
+video.className =
+"video";
+
+video.controls =
+true;
+
+video.preload =
+"metadata";
+
+video.src =
+"/api/download?key=" +
+encodeURIComponent(
+file.key
+);
+
+
+const buttons =
+document.createElement(
+"div"
+);
+
+buttons.className =
+"buttons";
+
+
+const open =
+document.createElement(
+"a"
+);
+
+open.className =
+"open";
+
+open.textContent =
+"▶ Open";
+
+open.href =
+"/api/download?key=" +
+encodeURIComponent(
+file.key
+);
+
+open.target =
+"_blank";
+
+
+const download =
+document.createElement(
+"a"
+);
+
+download.className =
+"download";
+
+download.textContent =
+"⬇ Download";
+
+download.href =
+"/api/download?key=" +
+encodeURIComponent(
+file.key
+);
+
+download.download =
+file.key;
+
+
+buttons.appendChild(
+open
+);
+
+buttons.appendChild(
+download
+);
+
+
+card.appendChild(
+name
+);
+
+card.appendChild(
+size
+);
+
+card.appendChild(
+video
+);
+
+card.appendChild(
+buttons
+);
+
+
+container.appendChild(
+card
+);
+
+}
+
+
+
+/* SEARCH */
+
+document
+.getElementById(
+"movieSearch"
+)
+.addEventListener(
+"input",
+function(){
+
+const query =
+this.value
+.toLowerCase()
+.trim();
+
+
+document
+.querySelectorAll(
+".movie"
+)
+.forEach(
+function(card){
+
+const name =
+card
+.querySelector(
+".movie-name"
+)
+.textContent
+.toLowerCase();
+
+
+card.style.display =
+!query ||
+name.includes(
+query
+)
+? ""
+: "none";
+
+});
+
+}
+);
+
+
+
+/* VIDEO CHECK */
+
+function isVideo(
+filename
+){
+
+const extensions = [
+
+".mp4",
+".webm",
+".ogg",
+".mov",
+".m4v"
+
+];
+
+
+const lower =
+filename.toLowerCase();
+
+
+return extensions.some(
+extension =>
+lower.endsWith(
+extension
+)
+);
+
+}
+
+
+
+/* SIZE */
+
+function formatSize(
+bytes
+){
+
+if(
+!bytes
+){
+
+return "0 B";
+
+}
+
+
+if(
+bytes < 1024
+){
+
+return bytes +
+" B";
+
+}
+
+
+if(
+bytes <
+1024 * 1024
+){
+
+return (
+bytes /
+1024
+).toFixed(1) +
+" KB";
+
+}
+
+
+if(
+bytes <
+1024 *
+1024 *
+1024
+){
+
+return (
+bytes /
+1024 /
+1024
+).toFixed(1) +
+" MB";
+
+}
+
+
+return (
+bytes /
+1024 /
+1024 /
+1024
+).toFixed(2) +
+" GB";
+
+}
+
+
+
+/* ESCAPE */
+
+function escapeHTML(
+text
+){
+
+const div =
+document.createElement(
+"div"
+);
+
+div.textContent =
+text;
+
+return div.innerHTML;
+
+}
+
+
+/* START */
+
+loadMovies();
+
+</script>
+
+</body>
+
+</html>
