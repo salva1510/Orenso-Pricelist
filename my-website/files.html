@@ -1,186 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
 
-<title>FilesFlex</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fa;
-  margin: 0;
-  padding: 20px;
-}
+  <title>FilesFlex</title>
 
-.container {
-  max-width: 800px;
-  margin: auto;
-}
-
-h1 {
-  text-align: center;
-}
-
-.file {
-  background: white;
-  padding: 15px;
-  margin: 12px 0;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08);
-}
-
-.name {
-  font-weight: bold;
-  word-break: break-all;
-  margin-bottom: 10px;
-}
-
-.size {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-button {
-  border: 0;
-  padding: 10px 15px;
-  border-radius: 7px;
-  background: #2563eb;
-  color: white;
-  margin-right: 6px;
-  cursor: pointer;
-}
-
-#status {
-  text-align: center;
-  margin: 20px 0;
-}
-</style>
+  <link rel="stylesheet" href="/files.css">
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-<h1>📁 FilesFlex</h1>
+    <!-- HEADER -->
+    <header class="header">
 
-<div id="status">Loading files...</div>
+      <div>
+        <div class="logo">
+          Files<span>Flex</span>
+        </div>
 
-<div id="files"></div>
+        <div class="subtitle">
+          Your personal file manager
+        </div>
+      </div>
 
-</div>
+      <a href="/" class="home-button">
+        🏠 Home
+      </a>
 
-<script>
+    </header>
 
-async function loadFiles() {
 
-  const status = document.getElementById("status");
-  const container = document.getElementById("files");
+    <!-- UPLOAD -->
+    <section class="upload-box">
 
-  try {
+      <h2>📤 Upload File</h2>
 
-    const response = await fetch("/api/files");
+      <input
+        type="file"
+        id="fileInput"
+      >
 
-    if (!response.ok) {
-      throw new Error("API error: " + response.status);
-    }
+      <button
+        id="uploadButton"
+        class="primary-button"
+      >
+        ⬆ Upload
+      </button>
 
-    const data = await response.json();
+      <div id="uploadStatus"></div>
 
-    container.innerHTML = "";
+    </section>
 
-    if (!data.files || data.files.length === 0) {
-      status.textContent = "No files found.";
-      return;
-    }
 
-    status.textContent =
-      data.files.length + " file(s) found.";
+    <!-- FILE STATUS -->
+    <section class="file-header">
 
-    data.files.forEach(file => {
+      <div>
+        <h2>📁 My Files</h2>
 
-      const div = document.createElement("div");
-      div.className = "file";
+        <div id="status">
+          Loading files...
+        </div>
+      </div>
 
-      const name = document.createElement("div");
-      name.className = "name";
-      name.textContent = "📄 " + file.key;
+      <button
+        id="refreshButton"
+        class="refresh-button"
+      >
+        🔄 Refresh
+      </button>
 
-      const size = document.createElement("div");
-      size.className = "size";
-      size.textContent =
-        "Size: " + formatSize(file.size);
+    </section>
 
-      const open = document.createElement("button");
-      open.textContent = "▶ Open";
 
-      open.onclick = () => {
-        window.open(
-          "/api/download?key=" +
-          encodeURIComponent(file.key),
-          "_blank"
-        );
-      };
+    <!-- FILE LIST -->
+    <main id="files">
 
-      const download = document.createElement("button");
-      download.textContent = "⬇ Download";
+    </main>
 
-      download.onclick = () => {
+  </div>
 
-        const link = document.createElement("a");
 
-        link.href =
-          "/api/download?key=" +
-          encodeURIComponent(file.key);
-
-        link.download = file.key;
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        link.remove();
-      };
-
-      div.appendChild(name);
-      div.appendChild(size);
-      div.appendChild(open);
-      div.appendChild(download);
-
-      container.appendChild(div);
-
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    status.textContent =
-      "❌ Error: " + error.message;
-
-  }
-
-}
-
-function formatSize(bytes) {
-
-  if (bytes < 1024)
-    return bytes + " B";
-
-  if (bytes < 1024 * 1024)
-    return (bytes / 1024).toFixed(1) + " KB";
-
-  if (bytes < 1024 * 1024 * 1024)
-    return (bytes / 1024 / 1024).toFixed(1) + " MB";
-
-  return (bytes / 1024 / 1024 / 1024).toFixed(2) + " GB";
-}
-
-loadFiles();
-
-</script>
+  <script src="/files.js"></script>
 
 </body>
 </html>
